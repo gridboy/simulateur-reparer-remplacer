@@ -39,8 +39,10 @@ Avec les hypothèses par défaut : portable à 800 € HT (tarif grand compte), 
 |---|--:|--:|
 | Années amorties | 12 | 8 |
 | Années bonus | 0 | 4 |
-| Dépenses (amortissement, réparations, électricité) | 2 472 € | 1 932 € |
-| Empreinte (fabrication amortie, réparations, usage) | 562 kgCO₂e | 393 kgCO₂e |
+| Dépenses (amortissement et réparations) | 2 400 € | 1 860 € |
+| Empreinte (fabrication amortie et réparations) | 543 kgCO₂e | 374 kgCO₂e |
+
+L'électricité (72 € et 19 kgCO₂e sur 12 ans) est la même dans les deux cas : le simulateur ne la compte pas dans la comparaison.
 
 En réparant, vous économisez 540 € et évitez 169 kgCO₂e sur 12 ans. Sur un cycle de 7 ans, la réparation reste rentable jusqu'à 600 € d'interventions.
 

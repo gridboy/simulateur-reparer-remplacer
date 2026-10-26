@@ -1,6 +1,6 @@
 /** Tableau des quatre équipements avec leurs hypothèses, et total pour un poste complet. */
-import { compare } from "../core/calc.js?v=202610262213";
-import { formatDec, formatInt, formatEur, formatKg, formatGain, formatPct } from "../core/format.js?v=202610262213";
+import { compare } from "../core/calc.js?v=202610262216";
+import { formatDec, formatInt, formatEur, formatKg, formatGain, formatPct } from "../core/format.js?v=202610262216";
 
 const pill = pct => `<span class="pill ${pct < 0 ? "is-negative" : ""}">${formatGain(pct, formatPct)}</span>`;
 
@@ -24,8 +24,8 @@ export function mountCompareTable(root, store) {
         <thead>
           <tr>
             <th scope="col">Équipement</th><th scope="col">Durées</th>
-            <th scope="col">kgCO₂e/an<br>remplacer</th><th scope="col">kgCO₂e/an<br>réparer</th><th scope="col">Écart</th>
-            <th scope="col">€/an<br>remplacer</th><th scope="col">€/an<br>réparer</th><th scope="col">Écart</th>
+            <th scope="col">kgCO₂e/an*<br>remplacer</th><th scope="col">kgCO₂e/an*<br>réparer</th><th scope="col">Écart</th>
+            <th scope="col">€/an*<br>remplacer</th><th scope="col">€/an*<br>réparer</th><th scope="col">Écart</th>
             <th scope="col">Gain carbone<br>horizon</th><th scope="col">Gain financier<br>horizon</th>
           </tr>
         </thead>

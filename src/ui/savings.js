@@ -4,9 +4,9 @@
  *  2. un pont de calcul par dimension : total si l'on remplace − achats évités
  *     + réparations = total si l'on répare, l'écart étant annoté sur la dernière barre.
  */
-import { compare, events, SCENARIO } from "../core/calc.js?v=202610262213";
-import { CAR_KG_PER_KM } from "../data/defaults.js?v=202610262213";
-import { formatKg, formatEur, formatInt, formatDec, formatPct, formatYears } from "../core/format.js?v=202610262213";
+import { compare, events, SCENARIO } from "../core/calc.js?v=202610262216";
+import { CAR_KG_PER_KM } from "../data/defaults.js?v=202610262216";
+import { formatKg, formatEur, formatInt, formatDec, formatPct, formatYears } from "../core/format.js?v=202610262216";
 
 const NOUNS = {
   ecran: ["écran", "écrans"],
@@ -19,12 +19,12 @@ const NOUNS = {
 const BRIDGES = [
   {
     kind: "money", title: "D'où vient l'économie en euros", gainKey: "money", format: formatEur,
-    depreciationLabel: "d'amortissement", usageLabel: "d'électricité",
+    unitLabel: "d'amortissement", usageNote: "L'électricité",
     replaceLabel: "Si vous remplacez", avoidedLabel: "Années bonus sans amortissement", repairsLabel: "Réparations payées"
   },
   {
     kind: "carbon", title: "D'où vient l'économie en carbone", gainKey: "carbon", format: formatKg,
-    depreciationLabel: "de fabrication amortie", usageLabel: "d'usage",
+    unitLabel: "de fabrication amortie", usageNote: "L'empreinte de l'électricité",
     replaceLabel: "Si vous remplacez", avoidedLabel: "Années bonus sans fabrication amortie", repairsLabel: "Empreinte des réparations"
   }
 ];
@@ -117,7 +117,7 @@ function heroesHtml(c, global) {
 
 function bridgeHtml(b, c) {
   // c porte bonusYears ; g le bilan du poste (money ou carbon)
-  const g = c[b.gainKey];
+  const g = { ...c[b.gainKey], horizonYears: c.amortizedYears + c.bonusYears };
   const afterAvoided = g.before - g.avoided;
   const max = Math.max(g.before, afterAvoided + g.repairs, g.after) || 1;
   const pos = v => (v / max) * 100;
@@ -126,13 +126,13 @@ function bridgeHtml(b, c) {
     `<span class="bridge-bar ${cls}" style="left:${pos(Math.min(from, to))}%;width:${pos(Math.abs(to - from))}%" title="${title}"></span>`;
 
   const rows = [
-    { op: "", label: `${b.replaceLabel}<small>${b.format(g.depreciation)} ${b.depreciationLabel} + ${b.format(g.usage)} ${b.usageLabel}</small>`, value: b.format(g.before),
+    { op: "", label: `${b.replaceLabel}<small>${formatYears(g.horizonYears)} × ${b.format(g.charge)} ${b.unitLabel}</small>`, value: b.format(g.before),
       bar: bar(0, g.before, "is-replace", `Total si vous remplacez : ${b.format(g.before)}`) },
     { op: "−", label: `${b.avoidedLabel}<small>${formatDec(c.bonusYears)} an${c.bonusYears >= 2 ? "s" : ""} × ${b.format(c.bonusYears ? g.avoided / c.bonusYears : 0)}</small>`, value: `−${b.format(g.avoided)}`,
       bar: bar(afterAvoided, g.before, "is-avoided", `${b.avoidedLabel} : ${b.format(g.avoided)}`) },
     { op: "+", label: b.repairsLabel, value: `+${b.format(g.repairs)}`,
       bar: bar(afterAvoided, afterAvoided + g.repairs, "is-repairs", `${b.repairsLabel} : ${b.format(g.repairs)}`) },
-    { op: "=", label: `Si vous réparez<small>${b.format(g.depreciationKept)} ${b.depreciationLabel} + ${b.format(g.repairs)} de réparations + ${b.format(g.usage)} ${b.usageLabel}</small>`, value: b.format(g.after), total: true,
+    { op: "=", label: `Si vous réparez<small>${formatYears(g.amortized)} × ${b.format(g.charge)} ${b.unitLabel} + ${b.format(g.repairs)} de réparations</small>`, value: b.format(g.after), total: true,
       bar: bar(0, g.after, "is-repair", `Total si vous réparez : ${b.format(g.after)}`)
         + (Math.abs(saving) > 0.5
           ? `<span class="bridge-gap ${saving < 0 ? "is-negative" : ""}" style="left:${pos(Math.min(g.after, g.before))}%;width:${pos(Math.abs(saving))}%">
@@ -166,7 +166,7 @@ export function mountSavings(root, store) {
         </header>
         ${heroesHtml(c, state.global)}
         <div class="bridges">${BRIDGES.map(b => bridgeHtml(b, c)).join("")}</div>
-        <p class="savings-note">Totaux sur ${state.global.horizon} ans. Achat et fabrication sont amortis sur la durée d'amortissement ; au-delà, chaque année bonus n'en coûte plus. Électricité comprise, identique dans les deux cas. Équivalence voiture : ${String(CAR_KG_PER_KM).replace(".", ",")} kgCO₂e/km, ADEME.</p>
+        <p class="savings-note">Totaux sur ${state.global.horizon} ans. Achat et fabrication sont amortis sur la durée d'amortissement ; au-delà, chaque année bonus n'en coûte plus. L'électricité (${formatEur(c.money.usage)}, ${formatKg(c.carbon.usage)} CO₂e) est la même dans les deux cas : elle n'est pas comptée. Équivalence voiture : ${String(CAR_KG_PER_KM).replace(".", ",")} kgCO₂e/km, ADEME.</p>
       </section>`;
   }
   store.subscribe(render);

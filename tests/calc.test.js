@@ -14,11 +14,11 @@ test("portable sur 12 ans : 4 ans d'amortissement, 3 ans bonus par cycle", () =>
   assert.equal(c.amortizedYears, 8);
   assert.equal(c.bonusYears, 4);
   assert.equal(c.repairCount, 2); // batterie à 4 et 11 ans
-  const use = 30 * 0.2;
-  close(c.money.before, (800 / 4 + use) * 12);
+  close(c.money.before, 800 / 4 * 12);
   close(c.money.avoided, 800 / 4 * 4);
   close(c.money.repairs, 2 * (90 + 40));
-  close(c.money.after, (800 / 4) * 8 + 2 * 130 + use * 12);
+  close(c.money.after, (800 / 4) * 8 + 2 * 130);
+  close(c.money.usage, 30 * 0.2 * 12);
   close(c.carbon.avoided, 181 / 4 * 4);
   close(c.carbon.repairs, 2 * 6);
 });

@@ -61,20 +61,20 @@ export function amortizedYears(device, horizon, kind) {
 }
 
 /**
- * Bilan d'un poste sur l'horizon, en logique d'amortissement :
+ * Bilan d'un poste sur l'horizon, en logique d'amortissement (hors usage, identique) :
  * remplacer = dotation chaque année ; réparer = dotation pendant les années
  * d'amortissement seulement, plus les réparations.
  */
 function ledger({ charge, use, horizon, amortized, repairs }) {
-  const before = (charge + use) * horizon;
+  // L'usage (électricité) est identique dans les deux scénarios : il est reporté à part
+  // et n'entre pas dans les totaux comparés.
+  const before = charge * horizon;
   const avoided = charge * (horizon - amortized);
   const after = before - avoided + repairs;
   const net = before - after;
   return {
     before, after, avoided, repairs, net, perYear: net / horizon, pct: before ? net / before * 100 : 0,
-    depreciation: charge * horizon,          // amortissement si l'on remplace
-    depreciationKept: charge * amortized,    // amortissement restant si l'on répare
-    usage: use * horizon                     // électricité ou usage, identique dans les deux cas
+    charge, amortized, usage: use * horizon
   };
 }
 
