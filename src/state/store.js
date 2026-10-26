@@ -2,7 +2,7 @@
  * État de l'application : hypothèses globales, hypothèses par équipement, équipement affiché.
  * Persistance locale (localStorage) en confort : l'application fonctionne sans.
  */
-import { GLOBAL_DEFAULTS, DEVICE_DEFAULTS, DEFAULT_DEVICE } from "../data/defaults.js?v=202610262156";
+import { GLOBAL_DEFAULTS, DEVICE_DEFAULTS, DEFAULT_DEVICE, LIFETIME_RANGE, EXTENSION_RANGE } from "../data/defaults.js?v=202610262159";
 
 const STORAGE_KEY = "tnrc-simulateur-duree-de-vie-v2";
 
@@ -18,10 +18,29 @@ function isValid(state) {
     && DEVICE_DEFAULTS[state.current];
 }
 
+const clamp = (v, min, max, fallback) => (Number.isFinite(+v) ? Math.min(max, Math.max(min, +v)) : fallback);
+
+/**
+ * Remet en cohérence un état sauvegardé par une version antérieure :
+ * durées bornées, durée prolongée jamais inférieure à la durée habituelle,
+ * champs manquants repris des valeurs par défaut.
+ */
+function sanitize(saved) {
+  const state = { ...initialState(), ...saved, global: { ...GLOBAL_DEFAULTS, ...saved.global } };
+  for (const [key, defaults] of Object.entries(DEVICE_DEFAULTS)) {
+    const d = { ...clone(defaults), ...saved.devices[key] };
+    d.life = clamp(d.life, LIFETIME_RANGE.min, LIFETIME_RANGE.max, defaults.life);
+    d.lifeExt = d.life + clamp(d.lifeExt - d.life, EXTENSION_RANGE.min, EXTENSION_RANGE.max, defaults.lifeExt - defaults.life);
+    if (!Array.isArray(d.repairs)) d.repairs = clone(defaults.repairs);
+    state.devices[key] = d;
+  }
+  return state;
+}
+
 function load() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    return isValid(saved) ? saved : initialState();
+    return isValid(saved) ? sanitize(saved) : initialState();
   } catch {
     return initialState();
   }
@@ -57,7 +76,14 @@ export function createStore() {
       requestAnimationFrame(() => {
         const batched = pending;
         pending = null;
-        listeners.forEach(fn => fn(state, batched));
+        // Une vue en erreur ne doit pas empêcher les autres de se mettre à jour
+        listeners.forEach(fn => {
+          try {
+            fn(state, batched);
+          } catch (error) {
+            console.error("[simulateur] échec de mise à jour d'une vue", error);
+          }
+        });
       });
     } else if (REASONS.indexOf(reason) < REASONS.indexOf(pending)) {
       pending = reason;

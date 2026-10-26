@@ -2,7 +2,7 @@
  * Champs numériques déclaratifs : une définition = un libellé, une unité, des bornes,
  * et un accès (get/set) à l'état. Un seul écouteur délégué par conteneur.
  */
-import { byId, readNumber, setValue } from "./dom.js?v=202610262156";
+import { byId, readNumber, setValue } from "./dom.js?v=202610262159";
 
 /** HTML d'une liste de champs. */
 export function fieldsHtml(prefix, defs) {

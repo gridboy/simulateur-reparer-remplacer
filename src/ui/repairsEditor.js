@@ -2,9 +2,9 @@
  * Éditeur des réparations du scénario "réparer".
  * Chaque intervention : libellé, année, pièces, main-d'œuvre, empreinte, activation.
  */
-import { escapeHtml, readNumber } from "./dom.js?v=202610262156";
-import { repairCost } from "../core/calc.js?v=202610262156";
-import { formatEur } from "../core/format.js?v=202610262156";
+import { escapeHtml, readNumber } from "./dom.js?v=202610262159";
+import { repairCost } from "../core/calc.js?v=202610262159";
+import { formatEur } from "../core/format.js?v=202610262159";
 
 const NUMERIC = ["year", "parts", "labor", "co2"];
 const STRUCTURAL = new Set(["device", "reset", "repairs"]);
