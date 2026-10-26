@@ -1,7 +1,7 @@
 /** Frise des achats, des périodes d'amortissement comptable et des réparations sur l'horizon. */
-import { activeRepairs, purchases, SCENARIO } from "../core/calc.js";
-import { formatDec } from "../core/format.js";
-import { escapeHtml } from "./dom.js";
+import { activeRepairs, purchases, SCENARIO } from "../core/calc.js?v=202610262156";
+import { formatDec } from "../core/format.js?v=202610262156";
+import { escapeHtml } from "./dom.js?v=202610262156";
 
 const ROWS = [
   { scenario: SCENARIO.REPLACE, label: "Remplacer", lifeKey: "life" },

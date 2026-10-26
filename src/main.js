@@ -1,16 +1,16 @@
 /** Point d'entrée : crée le store et monte chaque vue sur son conteneur. */
-import { createStore } from "./state/store.js";
-import { byId } from "./ui/dom.js";
-import { mountPartners } from "./ui/partners.js";
-import { mountDevicePicker } from "./ui/devicePicker.js";
-import { mountLifetimeControls } from "./ui/lifetimeControls.js";
-import { mountDeviceParams, mountGlobalParams } from "./ui/paramsPanel.js";
-import { mountRepairsEditor } from "./ui/repairsEditor.js";
-import { mountSavings } from "./ui/savings.js";
-import { mountThresholds } from "./ui/thresholds.js";
-import { mountCharts } from "./ui/charts.js";
-import { mountTimeline } from "./ui/timeline.js";
-import { mountCompareTable } from "./ui/compareTable.js";
+import { createStore } from "./state/store.js?v=202610262156";
+import { byId } from "./ui/dom.js?v=202610262156";
+import { mountPartners } from "./ui/partners.js?v=202610262156";
+import { mountDevicePicker } from "./ui/devicePicker.js?v=202610262156";
+import { mountLifetimeControls } from "./ui/lifetimeControls.js?v=202610262156";
+import { mountDeviceParams, mountGlobalParams } from "./ui/paramsPanel.js?v=202610262156";
+import { mountRepairsEditor } from "./ui/repairsEditor.js?v=202610262156";
+import { mountSavings } from "./ui/savings.js?v=202610262156";
+import { mountThresholds } from "./ui/thresholds.js?v=202610262156";
+import { mountCharts } from "./ui/charts.js?v=202610262156";
+import { mountTimeline } from "./ui/timeline.js?v=202610262156";
+import { mountCompareTable } from "./ui/compareTable.js?v=202610262156";
 
 const store = createStore();
 
@@ -28,7 +28,20 @@ const VIEWS = [
   ["compare", mountCompareTable]
 ];
 
-VIEWS.forEach(([id, mount]) => mount(byId(id), store));
+// Chaque vue est montée indépendamment : un conteneur absent (page en cache d'une
+// version précédente) ou une erreur dans une vue ne bloque pas les suivantes.
+VIEWS.forEach(([id, mount]) => {
+  const root = byId(id);
+  if (!root) {
+    console.warn(`[simulateur] conteneur #${id} absent : vue ignorée`);
+    return;
+  }
+  try {
+    mount(root, store);
+  } catch (error) {
+    console.error(`[simulateur] échec du montage de #${id}`, error);
+  }
+});
 
 const deviceTitle = byId("device-title");
 const renderTitle = () => {

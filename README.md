@@ -77,7 +77,10 @@ Le modèle applique la même consommation électrique aux deux scénarios.
 ```sh
 npm start        # http://localhost:8080 (serveur statique Python)
 npm test         # tests du moteur de calcul (Node ≥ 18)
+npm run bump     # nouveau numéro de version (?v=…) avant chaque livraison
 ```
+
+Avant de pousser une nouvelle version, lancez `npm run bump` : le script change le numéro `?v=` de toutes les ressources, pour que les navigateurs ne mélangent pas fichiers en cache et fichiers neufs.
 
 L'application tourne sans dépendance ni build. Elle charge des modules ES : servez-la en HTTP, car le navigateur bloque leur chargement en `file://`. Un hébergement statique comme GitHub Pages suffit.
 
@@ -97,6 +100,7 @@ src/state/store.js      état, abonnements, persistance locale
 src/ui/*.js             une vue par fichier (sélecteur, durées, bilans, courbes…)
 assets/logos/           logos partenaires (LaNum, NéoNum)
 tests/calc.test.js      tests du moteur
+scripts/bump-version.mjs  numéro de version des ressources (cache navigateur)
 docs/capture.webp       capture d'écran du README
 ```
 
