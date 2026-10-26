@@ -7,7 +7,7 @@
 ![Sans dépendance](https://img.shields.io/badge/d%C3%A9pendances-0-brightgreen)
 ![Tests](https://img.shields.io/badge/tests-node%20--test-339933?logo=nodedotjs&logoColor=white)
 ![Langue](https://img.shields.io/badge/langue-fran%C3%A7ais-6b2283)
-[![Licence CC BY-SA 4.0](https://img.shields.io/badge/licence-CC%20BY--SA%204.0-lightgrey)](LICENSE)
+[![Licence EUPL-1.2](https://img.shields.io/badge/licence-EUPL--1.2-003399)](LICENSE)
 
 **[Ouvrir le simulateur en ligne](https://gridboy.github.io/simulateur-reparer-remplacer/)**
 
@@ -105,6 +105,8 @@ L'application applique l'éco-conception qu'elle défend : 2 familles de polices
 
 ## Licence
 
-Ce simulateur est publié sous licence [Creative Commons Attribution - Partage dans les mêmes conditions 4.0 International (CC BY-SA 4.0)](LICENSE). Vous pouvez le copier, le modifier et le redistribuer, y compris à des fins commerciales, à condition de citer la source et de publier vos modifications sous la même licence.
+Ce simulateur est publié sous [licence publique de l'Union européenne EUPL-1.2](LICENSE). Vous pouvez l'utiliser, le modifier et le redistribuer, y compris à des fins commerciales. Si vous distribuez une version modifiée ou la proposez en service en ligne, vous devez publier son code source sous EUPL-1.2 ou sous une licence compatible listée dans l'annexe de la licence.
+
+L'EUPL a la même valeur juridique dans les 23 langues officielles de l'Union, dont le [texte en français](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12).
 
 Les logos LaNum Pays Basque et NéoNum appartiennent à leurs organisations et ne relèvent pas de cette licence.
