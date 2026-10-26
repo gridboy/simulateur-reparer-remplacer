@@ -4,9 +4,9 @@
  *  2. un pont de calcul par dimension : total si l'on remplace − achats évités
  *     + réparations = total si l'on répare, l'écart étant annoté sur la dernière barre.
  */
-import { compare, events, purchases, SCENARIO } from "../core/calc.js?v=202610262207";
-import { CAR_KG_PER_KM } from "../data/defaults.js?v=202610262207";
-import { formatKg, formatEur, formatInt, formatDec, formatPct } from "../core/format.js?v=202610262207";
+import { compare, events, SCENARIO } from "../core/calc.js?v=202610262210";
+import { CAR_KG_PER_KM } from "../data/defaults.js?v=202610262210";
+import { formatKg, formatEur, formatInt, formatDec, formatPct, formatYears } from "../core/format.js?v=202610262210";
 
 const NOUNS = {
   ecran: ["écran", "écrans"],
@@ -15,7 +15,6 @@ const NOUNS = {
   phone: ["smartphone", "smartphones"]
 };
 
-const plural = (n, [one, many]) => `${formatInt(n)} ${n > 1 ? many : one}`;
 
 const BRIDGES = [
   {
@@ -28,20 +27,52 @@ const BRIDGES = [
   }
 ];
 
+/** « 0, 4 et 8 ans » */
+function listYears(years) {
+  const parts = years.map(formatDec);
+  const text = parts.length > 1 ? `${parts.slice(0, -1).join(", ")} et ${parts.at(-1)}` : parts[0];
+  return `${text} an${years.at(-1) >= 2 ? "s" : ""}`;
+}
+
+/** Périodes bonus de l'horizon : amorti, toujours en service. */
+function bonusPeriods(device, horizon) {
+  const periods = [];
+  for (let start = 0; start < horizon; start += device.lifeExt) {
+    const from = start + device.life;
+    const to = Math.min(start + device.lifeExt, horizon);
+    if (from < to) periods.push(`de ${formatDec(from)} à ${formatDec(to)} ans`);
+  }
+  return periods;
+}
+
+/** Titre et calendrier en clair des deux scénarios sur l'horizon. */
 function storyHtml(device, key, global, bonus) {
   const { horizon } = global;
-  const nA = purchases(device, horizon, SCENARIO.REPLACE);
-  const nB = purchases(device, horizon, SCENARIO.REPAIR);
-  const nRep = events(device, horizon, SCENARIO.REPAIR).filter(e => e.kind === "repair").length;
-  const noun = NOUNS[key];
-  if (device.lifeExt <= device.life) {
-    return `Sans année gagnée, vous achetez ${plural(nA, noun)} en ${horizon} ans dans les deux cas.`;
-  }
-  const repairs = nRep ? `${nRep} réparation${nRep > 1 ? "s" : ""}` : "";
-  if (nB === nA) {
-    return `En ${horizon} ans, vous achetez <b>${plural(nB, noun)}</b> dans les deux cas${repairs ? `, et payez en plus ${repairs}` : ""}.`;
-  }
-  return `En ${horizon} ans, vous achetez <b>${plural(nB, noun)}</b> au lieu de ${formatInt(nA)}${repairs ? ` et payez ${repairs}` : ""} : <b>${formatDec(bonus)} an${bonus >= 2 ? "s" : ""} bonus</b> sans amortissement.`;
+  const [one, many] = NOUNS[key];
+  const extension = device.lifeExt - device.life;
+  const buys = kind => events(device, horizon, kind).filter(e => e.kind === "buy").map(e => e.t);
+  const repairYears = events(device, horizon, SCENARIO.REPAIR).filter(e => e.kind === "repair").map(e => e.t);
+
+  const title = extension > 0
+    ? `En réparant, vous gardez chaque ${one} <b>${formatYears(extension)} de plus</b> après son amortissement de ${formatYears(device.life)}.`
+    : `Sans année bonus, réparer revient à remplacer : rachat tous les ${formatYears(device.life)}.`;
+
+  const replaceBuys = buys(SCENARIO.REPLACE);
+  const repairBuys = buys(SCENARIO.REPAIR);
+  const periods = bonusPeriods(device, horizon);
+  const repairLine = [
+    `${repairBuys.length > 1 ? "achats" : "achat"} à ${listYears(repairBuys)}`,
+    repairYears.length ? `${repairYears.length > 1 ? "réparations" : "réparation"} à ${listYears(repairYears)}` : "",
+    periods.length ? `années bonus ${periods.join(", ")}, soit <b>${formatYears(bonus)}</b>` : "aucune année bonus"
+  ].filter(Boolean).join(" · ");
+
+  return `
+    <h3 id="savings-title" class="savings-story">${title}</h3>
+    <dl class="calendar">
+      <div data-scenario="replace"><dt>Remplacer</dt>
+        <dd>${replaceBuys.length > 1 ? "achats" : "achat"} à ${listYears(replaceBuys)} · ${replaceBuys.length} ${replaceBuys.length > 1 ? many : one} amorti${replaceBuys.length > 1 ? "s" : ""} en continu, aucune année bonus</dd></div>
+      <div data-scenario="repair"><dt>Réparer</dt><dd>${repairLine}</dd></div>
+    </dl>`;
 }
 
 // En dessous d'une demi-unité, l'écart s'affiche à l'équilibre plutôt qu'en gain ou perte de 0
@@ -129,7 +160,7 @@ export function mountSavings(root, store) {
       <section class="savings" aria-labelledby="savings-title">
         <header class="savings-head">
           <span class="eyebrow">Sur ${state.global.horizon} ans, en réparant plutôt qu'en remplaçant</span>
-          <h3 id="savings-title" class="savings-story">${storyHtml(d, state.current, state.global, c.bonusYears)}</h3>
+          ${storyHtml(d, state.current, state.global, c.bonusYears)}
         </header>
         ${heroesHtml(c, state.global)}
         <div class="bridges">${BRIDGES.map(b => bridgeHtml(b, c)).join("")}</div>

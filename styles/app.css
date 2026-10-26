@@ -291,6 +291,13 @@ input[type="text"] { font-family: var(--font-sans); }
 .savings-head { display: grid; gap: 6px; }
 .savings-story { font-size: 1.15rem; font-weight: 400; }
 .savings-story b { font-weight: 600; }
+.calendar { display: grid; gap: 4px; margin: 4px 0 0; font-size: 0.86rem; }
+.calendar > div { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 8px; align-items: baseline; }
+.calendar dt { font: 500 0.72rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; display: flex; align-items: center; gap: 6px; }
+.calendar dt::before { content: ""; width: 10px; height: 10px; border-radius: 2px; background: var(--replace-mark); }
+.calendar [data-scenario="repair"] dt::before { background: var(--repair-mark); }
+.calendar dd { margin: 0; color: var(--muted); }
+.calendar dd b { color: var(--ink); font-weight: 600; }
 
 .hero-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 .hero {
