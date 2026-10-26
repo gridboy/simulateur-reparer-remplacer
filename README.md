@@ -1,22 +1,32 @@
 # Réparer ou remplacer ?
 
-Un simulateur pour décider s'il vaut mieux remplacer un équipement numérique ou le réparer, en comparant ce que chaque option coûte en euros et en carbone.
+![Numérique responsable](https://img.shields.io/badge/num%C3%A9rique-responsable-11795a)
+![Données ADEME](https://img.shields.io/badge/donn%C3%A9es-ADEME%20Base%20Empreinte-0b5394)
+![Boavizta](https://img.shields.io/badge/facteurs-Boavizta-4b8bbe)
+![JavaScript](https://img.shields.io/badge/JavaScript-modules%20ES-f7df1e?logo=javascript&logoColor=black)
+![Sans dépendance](https://img.shields.io/badge/d%C3%A9pendances-0-brightgreen)
+![Tests](https://img.shields.io/badge/tests-node%20--test-339933?logo=nodedotjs&logoColor=white)
+![Langue](https://img.shields.io/badge/langue-fran%C3%A7ais-6b2283)
 
-Il couvre quatre équipements courants en 2026 : écran 24″, ordinateur fixe, ordinateur portable et smartphone 6″. Il ne mesure pas l'empreinte d'un parc. Il sert à simuler l'effet d'une décision : garder un équipement plus longtemps, payer ses réparations, et voir ce que l'on y gagne ou y perd.
+![Capture du simulateur : durées de vie, gain carbone, gain financier et seuils de pertinence pour un ordinateur portable](docs/capture.webp)
 
-Projet porté avec **LaNum Pays Basque** et **NéoNum**.
+Vous hésitez entre remplacer un équipement numérique et le réparer ? Ce simulateur chiffre les deux options en euros et en kgCO₂e, pour un écran 24″, un ordinateur fixe, un ordinateur portable ou un smartphone 6″ de 2026.
+
+Vous réglez la durée de vie, les réparations et leur coût. L'outil calcule ce que vous gagnez ou perdez en gardant l'équipement plus longtemps. Il ne fait pas l'inventaire d'un parc.
+
+LaNum Pays Basque et NéoNum portent le projet.
 
 ## Pourquoi simuler avant de remplacer
 
-Quand un équipement vieillit ou tombe en panne, la décision se prend souvent sur deux chiffres : le devis de réparation et le prix du modèle neuf. Ces deux chiffres ne suffisent pas, pour trois raisons.
+Face à une panne, vous comparez en général le devis de réparation au prix du modèle neuf. Cette comparaison laisse de côté le carbone de fabrication et la durée d'usage.
 
-**1. L'essentiel de l'empreinte carbone est payé à l'achat.** Pour un ordinateur portable, un smartphone ou un écran, la fabrication représente la plus grande part des émissions sur le cycle de vie, surtout en France où l'électricité est peu carbonée. Remplacer un équipement qui fonctionne encore, c'est payer une nouvelle fois cette fabrication. Le seul moyen de l'amortir est d'allonger la durée d'usage. Sans simulation, cet impact reste invisible au moment de décider.
+**Vous payez l'essentiel du carbone à l'achat.** Pour un portable, un smartphone ou un écran, la fabrication pèse plus que l'électricité consommée pendant toute la vie de l'appareil, en particulier en France où le kWh émet 0,052 kgCO₂e. Chaque remplacement anticipé vous fait payer une nouvelle fabrication. En gardant l'appareil plus longtemps, vous répartissez cette fabrication sur plus d'années.
 
-**2. Le coût réel d'un équipement dépend de sa durée d'usage, pas de sa durée comptable.** Un portable amorti en 3 ans et gardé 7 ans coûte, par année de service, presque deux fois moins qu'un portable remplacé tous les 4 ans. Une réparation qui paraît chère en valeur absolue devient souvent très rentable une fois ramenée au nombre d'années qu'elle ajoute. Il faut donc comparer des coûts annualisés, réparations comprises, et pas un devis face à un prix d'achat.
+**Vous payez un équipement par année de service.** Votre service comptable amortit un portable en 3 ans. Si vous le gardez 7 ans, chaque année d'usage vous coûte 182 € au lieu de 281 € avec un remplacement tous les 4 ans. Une batterie à 130 € vous paraît chère face à un devis ; ramenée aux 3 années qu'elle ajoute, elle vous fait économiser.
 
-**3. Le gain financier et le gain carbone ne vont pas toujours dans le même sens.** Une réparation peut être neutre en euros mais très favorable en carbone, ou l'inverse quand les pièces sont lourdes à produire. Les afficher séparément permet de voir lequel des deux motive la décision. Valoriser ensuite le carbone évité à un prix de référence permet de les additionner pour un arbitrage global.
+**Vos deux gains peuvent diverger.** Une réparation peut vous laisser à l'équilibre en euros et vous faire gagner en carbone. Une pièce lourde à produire peut produire l'effet inverse. Le simulateur affiche les deux gains côte à côte, puis les additionne en valorisant le carbone au prix que vous choisissez.
 
-Le simulateur rend ces trois éléments explicites. Pour chaque équipement, il répond à la question : **jusqu'à quel montant de réparation, et quelle empreinte de pièces, réparer reste-t-il plus intéressant que remplacer ?**
+Pour chaque équipement, vous obtenez le budget de réparation et l'empreinte de pièces au-delà desquels remplacer redevient préférable.
 
 ### Exemple : ordinateur portable pro
 
@@ -27,17 +37,17 @@ Avec les hypothèses par défaut : portable à 1 100 € HT, 181 kgCO₂e de fab
 | Empreinte par an | 46,8 kgCO₂e | 28,3 kgCO₂e |
 | Coût par an | 281 € | 182 € |
 
-Sur 12 ans, réparer évite environ 222 kgCO₂e et 1 190 € de dépenses. La réparation reste rentable jusqu'à 825 € d'interventions cumulées.
+Sur 12 ans, vous évitez 222 kgCO₂e et 1 191 € de dépenses en réparant. Vos réparations restent rentables jusqu'à 825 € d'interventions cumulées.
 
-## Ce que fait le simulateur
+## Fonctions
 
 - **Durées de vie** : un réglage pour la durée habituelle (remplacer) et un pour la durée prolongée (réparer), avec boutons et curseur.
-- **Réparations** : chaque intervention a une année, un coût de pièces, un coût de main-d'œuvre et une empreinte carbone. Une aide à la réparation peut être déduite.
+- **Réparations** : vous fixez pour chaque intervention son année, ses pièces, sa main-d'œuvre et son empreinte carbone. Vous pouvez déduire une aide à la réparation.
 - **Gain carbone** : fabrication évitée moins empreinte des réparations, par an et sur l'horizon choisi.
 - **Gain financier** : achats évités moins coût des réparations, électricité comprise.
 - **Bénéfice global** : gain financier plus valeur du carbone évité, au prix du carbone choisi (marché UE ETS ou valeur tutélaire).
 - **Seuils de pertinence** : budget et empreinte de réparation au-delà desquels remplacer devient préférable.
-- **Amortissement comptable** : la frise montre les années où l'équipement est amorti mais toujours en service.
+- **Amortissement comptable** : la frise distingue les années d'amortissement des années où l'équipement amorti reste en service.
 - **Comparaison** des quatre équipements et d'un poste de travail complet.
 
 ## Modèle de calcul
@@ -47,14 +57,14 @@ Sur 12 ans, réparer évite environ 222 kgCO₂e et 1 190 € de dépenses. La r
 - Gain net sur l'horizon = (bilan « remplacer » − bilan « réparer ») × horizon
 - Seuil de pertinence = prix neuf (ou empreinte de fabrication) × (durée prolongée ÷ durée habituelle − 1)
 
-La consommation électrique est la même dans les deux scénarios.
+Le modèle applique la même consommation électrique aux deux scénarios.
 
 ## Sources et limites
 
 - Empreinte de fabrication : [ADEME Base Empreinte](https://base-empreinte.ademe.fr/) (données NegaOctet), reprises par l'[API Boavizta](https://github.com/Boavizta/boaviztapi). Portable pro 181, ordinateur fixe 277 (unité centrale seule), écran 64,7 et smartphone 84 kgCO₂e.
 - Mix électrique France : 0,052 kgCO₂e/kWh (ADEME).
 - Prix du carbone : valeur de l'action pour le climat (rapport Quinet, 2019), environ 200 €/t en 2026 et 250 €/t en 2030.
-- Les prix 2026, les consommations et l'empreinte des pièces détachées sont des ordres de grandeur. Remplacez-les par vos propres données (devis, fiches produits, inventaire).
+- Les prix 2026, les consommations et l'empreinte des pièces détachées restent des ordres de grandeur. Remplacez-les par vos devis, fiches produits ou données d'inventaire.
 - Les facteurs ADEME décrivent des équipements de référence antérieurs à 2026.
 - Outil voisin : [Boavizta Terminal Impact](https://dataviz.boavizta.org/terminalimpact).
 
@@ -65,9 +75,9 @@ npm start        # http://localhost:8080 (serveur statique Python)
 npm test         # tests du moteur de calcul (Node ≥ 18)
 ```
 
-L'application n'a aucune dépendance et aucune étape de build. Elle utilise des modules ES, il faut donc la servir en HTTP : l'ouverture directe du fichier en `file://` ne fonctionne pas. Tout hébergement statique convient (GitHub Pages, par exemple).
+L'application tourne sans dépendance ni build. Elle charge des modules ES : servez-la en HTTP, car le navigateur bloque leur chargement en `file://`. Un hébergement statique comme GitHub Pages suffit.
 
-Les réglages sont conservés dans le navigateur de chaque utilisateur (localStorage). Aucune donnée n'est envoyée à un serveur.
+Votre navigateur garde vos réglages (localStorage). L'application n'envoie rien à un serveur.
 
 ## Structure
 
@@ -83,8 +93,9 @@ src/state/store.js      état, abonnements, persistance locale
 src/ui/*.js             une vue par fichier (sélecteur, durées, bilans, courbes…)
 assets/logos/           logos partenaires (LaNum, NéoNum)
 tests/calc.test.js      tests du moteur
+docs/capture.webp       capture d'écran du README
 ```
 
 ## Sobriété
 
-L'application suit les principes d'éco-conception qu'elle promeut. Elle charge 2 familles de polices (4 variantes), aucun framework, et ses logos pèsent moins de 20 Ko au total. Les graphiques sont en SVG généré, et le calcul se fait entièrement côté navigateur.
+L'application applique l'éco-conception qu'elle défend : 2 familles de polices (4 variantes), aucun framework, moins de 20 Ko de logos. Votre navigateur génère les graphiques en SVG et fait tous les calculs.
