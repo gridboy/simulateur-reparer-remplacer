@@ -508,3 +508,4 @@ tfoot > tr > * { border-top: 2px solid var(--line); border-bottom: 0; background
   .devices { grid-template-columns: minmax(0, 1fr); }
   .repair-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+.method .license { margin-top: 12px; }

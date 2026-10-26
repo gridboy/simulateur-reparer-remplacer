@@ -7,6 +7,9 @@
 ![Sans dépendance](https://img.shields.io/badge/d%C3%A9pendances-0-brightgreen)
 ![Tests](https://img.shields.io/badge/tests-node%20--test-339933?logo=nodedotjs&logoColor=white)
 ![Langue](https://img.shields.io/badge/langue-fran%C3%A7ais-6b2283)
+[![Licence CC BY-SA 4.0](https://img.shields.io/badge/licence-CC%20BY--SA%204.0-lightgrey)](LICENSE)
+
+**[Ouvrir le simulateur en ligne](https://gridboy.github.io/simulateur-reparer-remplacer/)**
 
 ![Capture du simulateur : durées de vie, gain carbone, gain financier et seuils de pertinence pour un ordinateur portable](docs/capture.webp)
 
@@ -68,7 +71,7 @@ Le modèle applique la même consommation électrique aux deux scénarios.
 - Les facteurs ADEME décrivent des équipements de référence antérieurs à 2026.
 - Outil voisin : [Boavizta Terminal Impact](https://dataviz.boavizta.org/terminalimpact).
 
-## Lancer
+## Lancer en local
 
 ```sh
 npm start        # http://localhost:8080 (serveur statique Python)
@@ -99,3 +102,9 @@ docs/capture.webp       capture d'écran du README
 ## Sobriété
 
 L'application applique l'éco-conception qu'elle défend : 2 familles de polices (4 variantes), aucun framework, moins de 20 Ko de logos. Votre navigateur génère les graphiques en SVG et fait tous les calculs.
+
+## Licence
+
+Ce simulateur est publié sous licence [Creative Commons Attribution - Partage dans les mêmes conditions 4.0 International (CC BY-SA 4.0)](LICENSE). Vous pouvez le copier, le modifier et le redistribuer, y compris à des fins commerciales, à condition de citer la source et de publier vos modifications sous la même licence.
+
+Les logos LaNum Pays Basque et NéoNum appartiennent à leurs organisations et ne relèvent pas de cette licence.
