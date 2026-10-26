@@ -25,7 +25,8 @@ export const CARBON_PRICES = Object.freeze([
   { value: 250, label: "Valeur tutélaire 2030", detail: "250 €/t" }
 ]);
 
-export const LIFETIME_RANGE = Object.freeze({ min: 1, max: 15, step: 0.5 });
+export const LIFETIME_RANGE = Object.freeze({ min: 1, max: 12, step: 0.5 });     // durée habituelle
+export const EXTENSION_RANGE = Object.freeze({ min: 0, max: 10, step: 0.5 });    // années gagnées en réparant
 
 export const DEVICE_DEFAULTS = Object.freeze({
   ecran: {

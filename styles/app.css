@@ -249,6 +249,7 @@ input[type="text"] { font-family: var(--font-sans); }
   color: var(--tone);
 }
 .life-control input[type="range"] { width: 100%; accent-color: var(--tone); }
+.life-total { color: var(--muted); min-height: 1.2em; }
 
 .ruler { display: grid; gap: 4px; }
 .ruler-track { position: relative; height: 22px; }

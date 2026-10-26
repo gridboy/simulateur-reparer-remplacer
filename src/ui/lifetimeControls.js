@@ -1,21 +1,32 @@
 /**
- * Contrôleurs de durée de vie : remplacer (durée habituelle) et réparer (durée prolongée).
- * Chaque contrôleur combine boutons −/+ et curseur ; une règle commune visualise l'écart.
+ * Contrôleurs de durée de vie :
+ *  - remplacer : durée de vie habituelle de l'équipement
+ *  - réparer   : années gagnées par la réparation, ajoutées à la durée habituelle (dès 0)
+ * L'état garde la durée prolongée (lifeExt = life + années gagnées) ; changer la durée
+ * habituelle conserve le nombre d'années gagnées.
  */
-import { LIFETIME_RANGE } from "../data/defaults.js";
+import { LIFETIME_RANGE, EXTENSION_RANGE } from "../data/defaults.js";
 import { formatYears, formatDec } from "../core/format.js";
 
-const { min, max, step } = LIFETIME_RANGE;
-
 const CONTROLS = [
-  { key: "life", scenario: "replace", tag: "Remplacer", title: "Durée de vie habituelle", hint: "Renouvellement au rythme actuel" },
-  { key: "lifeExt", scenario: "repair", tag: "Réparer", title: "Durée de vie prolongée", hint: "Avec les réparations prévues" }
+  {
+    key: "life", scenario: "replace", tag: "Remplacer", range: LIFETIME_RANGE,
+    title: "Durée de vie habituelle", hint: "Renouvellement au rythme actuel"
+  },
+  {
+    key: "extension", scenario: "repair", tag: "Réparer", range: EXTENSION_RANGE,
+    title: "Années gagnées par la réparation", hint: "Ajoutées à la durée habituelle"
+  }
 ];
 
-const clamp = v => Math.min(max, Math.max(min, Math.round(v / step) * step));
-const pct = v => (v / max) * 100;
+const RULER_MAX = LIFETIME_RANGE.max + EXTENSION_RANGE.max;
+
+const snap = (v, { min, max, step }) => Math.min(max, Math.max(min, Math.round(v / step) * step));
+const pct = v => (v / RULER_MAX) * 100;
+const extensionOf = d => Math.max(0, d.lifeExt - d.life);
 
 function controlHtml(c) {
+  const { min, max, step } = c.range;
   return `
     <div class="life-control" data-scenario="${c.scenario}">
       <div class="life-head">
@@ -29,12 +40,13 @@ function controlHtml(c) {
         <button type="button" data-key="${c.key}" data-step="1" aria-label="${c.title} : ajouter 6 mois">+</button>
       </div>
       <input type="range" id="life-range-${c.key}" data-key="${c.key}" min="${min}" max="${max}" step="${step}">
+      <small class="life-total" id="life-total-${c.key}"></small>
     </div>`;
 }
 
 function rulerTicks() {
   const ticks = [];
-  for (let y = 0; y <= max; y += 3) ticks.push(`<span style="left:${pct(y)}%">${y}</span>`);
+  for (let y = 0; y <= RULER_MAX; y += 5) ticks.push(`<span style="left:${pct(y)}%">${y}</span>`);
   return ticks.join("");
 }
 
@@ -51,34 +63,50 @@ export function mountLifetimeControls(root, store) {
     </div>
     <p class="life-gain" id="life-gain"></p>`;
 
-  const setLife = (key, value) => store.update(state => { state.devices[state.current][key] = clamp(value); });
+  const setters = {
+    life: value => store.update(state => {
+      const d = state.devices[state.current];
+      const extension = extensionOf(d);
+      d.life = snap(value, LIFETIME_RANGE);
+      d.lifeExt = d.life + extension;
+    }),
+    extension: value => store.update(state => {
+      const d = state.devices[state.current];
+      d.lifeExt = d.life + snap(value, EXTENSION_RANGE);
+    })
+  };
+  const current = { life: d => d.life, extension: extensionOf };
 
   root.addEventListener("input", event => {
-    if (event.target.type === "range") setLife(event.target.dataset.key, +event.target.value);
+    const key = event.target.dataset.key;
+    if (event.target.type === "range" && setters[key]) setters[key](+event.target.value);
   });
   root.addEventListener("click", event => {
     const button = event.target.closest("[data-step]");
     if (!button) return;
     const key = button.dataset.key;
-    setLife(key, store.device()[key] + step * +button.dataset.step);
+    setters[key](current[key](store.device()) + LIFETIME_RANGE.step * +button.dataset.step);
   });
 
   function render() {
     const d = store.device();
-    CONTROLS.forEach(c => {
-      root.querySelector(`#life-out-${c.key}`).textContent = formatYears(d[c.key]);
-      root.querySelector(`#life-range-${c.key}`).value = d[c.key];
-    });
+    const extension = extensionOf(d);
+
+    root.querySelector("#life-out-life").textContent = formatYears(d.life);
+    root.querySelector("#life-range-life").value = d.life;
+    root.querySelector("#life-total-life").textContent = "";
+
+    root.querySelector("#life-out-extension").textContent = `+${formatYears(extension)}`;
+    root.querySelector("#life-range-extension").value = extension;
+    root.querySelector("#life-total-extension").textContent = `Soit ${formatYears(d.lifeExt)} d'usage au total`;
+
     root.querySelector('.ruler-bar[data-scenario="replace"]').style.width = `${pct(d.life)}%`;
     root.querySelector('.ruler-bar[data-scenario="repair"]').style.width = `${pct(d.lifeExt)}%`;
     root.querySelector(".ruler-compta").style.left = `${pct(d.compta)}%`;
 
-    const gained = d.lifeExt - d.life;
-    const gain = root.querySelector("#life-gain");
-    gain.classList.toggle("is-warning", gained <= 0);
-    gain.innerHTML = gained > 0
-      ? `<strong>+${formatDec(gained)} ${gained >= 2 ? "ans" : "an"}</strong> d'usage gagnés par la réparation · amortissement comptable sur ${formatYears(d.compta)} (trait)`
-      : "La durée prolongée doit dépasser la durée habituelle pour comparer les deux scénarios.";
+    root.querySelector("#life-gain").innerHTML = extension > 0
+      ? `<strong>+${formatDec(extension)} ${extension >= 2 ? "ans" : "an"}</strong> d'usage gagnés par la réparation · amortissement comptable sur ${formatYears(d.compta)} (trait)`
+      : "Aucune année gagnée : réparer revient ici à remplacer. Ajoutez des années pour mesurer l'effet de la réparation.";
   }
 
   store.subscribe(render);

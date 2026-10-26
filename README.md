@@ -44,7 +44,7 @@ Sur 12 ans, vous évitez 222 kgCO₂e et 1 191 € de dépenses en réparant. Vo
 
 ## Fonctions
 
-- **Durées de vie** : un réglage pour la durée habituelle (remplacer) et un pour la durée prolongée (réparer), avec boutons et curseur.
+- **Durées de vie** : vous réglez la durée habituelle (remplacer), puis les années gagnées par la réparation, de +0 à +10 ans, avec boutons et curseur.
 - **Réparations** : vous fixez pour chaque intervention son année, ses pièces, sa main-d'œuvre et son empreinte carbone. Vous pouvez déduire une aide à la réparation.
 - **Gain carbone** : fabrication évitée moins empreinte des réparations, par an et sur l'horizon choisi.
 - **Gain financier** : achats évités moins coût des réparations, électricité comprise.

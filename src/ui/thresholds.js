@@ -24,7 +24,7 @@ export function mountThresholds(root, store) {
     const c = compare(d, state.global);
     const gained = d.lifeExt - d.life;
     if (gained <= 0) {
-      root.innerHTML = `<p class="muted">Allongez la durée prolongée pour calculer les seuils de pertinence.</p>`;
+      root.innerHTML = `<p class="muted">Ajoutez des années gagnées par la réparation pour calculer les seuils de pertinence.</p>`;
       return;
     }
     const afterCompta = years => formatYears(Math.max(0, years - d.compta));

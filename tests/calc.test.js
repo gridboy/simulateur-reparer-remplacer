@@ -44,6 +44,15 @@ test("au seuil de pertinence, réparer équivaut à remplacer", () => {
   close(c.carbon.perYear, 0);
 });
 
+test("sans année gagnée, réparer sans intervention équivaut à remplacer", () => {
+  const d = laptop();
+  d.lifeExt = d.life;
+  const c = compare(d, global);
+  assert.equal(c.repair.repairs.length, 0);
+  close(c.carbon.net, 0);
+  close(c.money.net, 0);
+});
+
 test("nombre d'achats sur 12 ans", () => {
   const d = laptop();
   assert.equal(purchases(d, 12, SCENARIO.REPLACE), 3);
