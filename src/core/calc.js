@@ -49,6 +49,8 @@ export function scenario(device, global, kind) {
 function gain(replaceAnnual, repairAnnual, avoidedKey, horizon) {
   const perYear = replaceAnnual.total - repairAnnual.total;
   return {
+    before: replaceAnnual.total * horizon,   // total si l'on remplace
+    after: repairAnnual.total * horizon,     // total si l'on répare
     avoided: (replaceAnnual[avoidedKey] - repairAnnual[avoidedKey]) * horizon,
     repairs: repairAnnual.rep * horizon,
     perYear,

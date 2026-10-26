@@ -1,4 +1,7 @@
-/** Courbes cumulées (émissions et dépenses) des deux scénarios, en SVG. */
+/**
+ * Calendrier des dépenses et des émissions réelles, cumulées année par année (SVG).
+ * Chaque marche est un achat ou une réparation ; l'économie amortie est donnée par la vue savings.
+ */
 import { events, cumulative, SCENARIO } from "../core/calc.js";
 import { formatKg, formatEur, formatInt } from "../core/format.js";
 
@@ -6,8 +9,8 @@ const SIZE = { width: 440, height: 230, left: 50, right: 14, top: 12, bottom: 28
 const NICE_STEPS = [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];
 
 const CHARTS = [
-  { id: "co2", title: "Émissions cumulées", unit: "kgCO₂e", key: "co2", rate: (d, g) => d.kwh * g.ef, format: formatKg },
-  { id: "eur", title: "Dépenses cumulées", unit: "€ HT", key: "eur", rate: (d, g) => d.kwh * g.elec, format: formatEur }
+  { id: "co2", title: "Calendrier des émissions", unit: "kgCO₂e", key: "co2", rate: (d, g) => d.kwh * g.ef, format: formatKg },
+  { id: "eur", title: "Calendrier des dépenses", unit: "€ HT", key: "eur", rate: (d, g) => d.kwh * g.elec, format: formatEur }
 ];
 
 const SERIES = [

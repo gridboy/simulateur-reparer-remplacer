@@ -46,9 +46,9 @@ Sur 12 ans, vous évitez 222 kgCO₂e et 1 191 € de dépenses en réparant. Vo
 
 - **Durées de vie** : vous réglez la durée habituelle (remplacer), puis les années gagnées par la réparation, de +0 à +10 ans, avec boutons et curseur.
 - **Réparations** : vous fixez pour chaque intervention son année, ses pièces, sa main-d'œuvre et son empreinte carbone. Vous pouvez déduire une aide à la réparation.
-- **Gain carbone** : fabrication évitée moins empreinte des réparations, par an et sur l'horizon choisi.
-- **Gain financier** : achats évités moins coût des réparations, électricité comprise.
-- **Bénéfice global** : gain financier plus valeur du carbone évité, au prix du carbone choisi (marché UE ETS ou valeur tutélaire).
+- **Ce que vous économisez** : le simulateur répond en une phrase (combien d'équipements vous achetez dans chaque cas), puis en trois chiffres sur l'horizon choisi : euros économisés, kgCO₂e évités avec leur équivalent en kilomètres de voiture, et bénéfice global au prix du carbone choisi.
+- **D'où vient l'économie** : un pont de calcul par dimension part du total « si vous remplacez », retire les achats ou la fabrication évités, ajoute les réparations et arrive au total « si vous réparez ». L'écart apparaît en pointillés.
+- **Calendrier des dépenses** : les courbes cumulées montrent quand vous payez, avec une marche à chaque achat ou réparation.
 - **Seuils de pertinence** : budget et empreinte de réparation au-delà desquels remplacer devient préférable.
 - **Amortissement comptable** : la frise distingue les années d'amortissement des années où l'équipement amorti reste en service.
 - **Comparaison** des quatre équipements et d'un poste de travail complet.
@@ -66,6 +66,7 @@ Le modèle applique la même consommation électrique aux deux scénarios.
 
 - Empreinte de fabrication : [ADEME Base Empreinte](https://base-empreinte.ademe.fr/) (données NegaOctet), reprises par l'[API Boavizta](https://github.com/Boavizta/boaviztapi). Portable pro 181, ordinateur fixe 277 (unité centrale seule), écran 64,7 et smartphone 84 kgCO₂e.
 - Mix électrique France : 0,052 kgCO₂e/kWh (ADEME).
+- Équivalence voiture : 0,218 kgCO₂e/km, voiture thermique moyenne (ADEME, Impact CO2).
 - Prix du carbone : valeur de l'action pour le climat (rapport Quinet, 2019), environ 200 €/t en 2026 et 250 €/t en 2030.
 - Les prix 2026, les consommations et l'empreinte des pièces détachées restent des ordres de grandeur. Remplacez-les par vos devis, fiches produits ou données d'inventaire.
 - Les facteurs ADEME décrivent des équipements de référence antérieurs à 2026.

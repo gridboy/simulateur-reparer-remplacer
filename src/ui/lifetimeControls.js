@@ -57,6 +57,8 @@ export function mountLifetimeControls(root, store) {
       <div class="ruler-track">
         <div class="ruler-bar" data-scenario="replace"></div>
         <div class="ruler-bar" data-scenario="repair"></div>
+        <span class="ruler-label" data-scenario="replace"></span>
+        <span class="ruler-label" data-scenario="repair"></span>
         <div class="ruler-compta"></div>
       </div>
       <div class="ruler-ticks">${rulerTicks()}</div>
@@ -103,6 +105,12 @@ export function mountLifetimeControls(root, store) {
     root.querySelector('.ruler-bar[data-scenario="replace"]').style.width = `${pct(d.life)}%`;
     root.querySelector('.ruler-bar[data-scenario="repair"]').style.width = `${pct(d.lifeExt)}%`;
     root.querySelector(".ruler-compta").style.left = `${pct(d.compta)}%`;
+    const labelReplace = root.querySelector('.ruler-label[data-scenario="replace"]');
+    labelReplace.style.left = `${pct(d.life)}%`;
+    labelReplace.textContent = `remplacer : ${formatYears(d.life)}`;
+    const labelRepair = root.querySelector('.ruler-label[data-scenario="repair"]');
+    labelRepair.style.left = `${pct(d.lifeExt)}%`;
+    labelRepair.textContent = `réparer : ${formatYears(d.lifeExt)}`;
 
     root.querySelector("#life-gain").innerHTML = extension > 0
       ? `<strong>+${formatDec(extension)} ${extension >= 2 ? "ans" : "an"}</strong> d'usage gagnés par la réparation · amortissement comptable sur ${formatYears(d.compta)} (trait)`

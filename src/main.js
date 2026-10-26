@@ -6,7 +6,7 @@ import { mountDevicePicker } from "./ui/devicePicker.js";
 import { mountLifetimeControls } from "./ui/lifetimeControls.js";
 import { mountDeviceParams, mountGlobalParams } from "./ui/paramsPanel.js";
 import { mountRepairsEditor } from "./ui/repairsEditor.js";
-import { mountGainPanels } from "./ui/gainPanels.js";
+import { mountSavings } from "./ui/savings.js";
 import { mountThresholds } from "./ui/thresholds.js";
 import { mountCharts } from "./ui/charts.js";
 import { mountTimeline } from "./ui/timeline.js";
@@ -21,7 +21,7 @@ const VIEWS = [
   ["device-params", mountDeviceParams],
   ["repairs", mountRepairsEditor],
   ["global-params", mountGlobalParams],
-  ["gains", mountGainPanels],
+  ["savings", mountSavings],
   ["thresholds", mountThresholds],
   ["charts", mountCharts],
   ["timeline", mountTimeline],

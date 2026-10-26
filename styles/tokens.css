@@ -16,6 +16,8 @@
   --repair: #11795a;
   --repair-soft: #dcefe6;
   --negative: #b4361f;
+  --replace-mark: #a0661f;   /* tracés validés (CVD, bande de clarté) */
+  --repair-mark: #11795a;
 
   --accent: #6b2283;
   --accent-soft: #f0e4f4;
@@ -42,6 +44,8 @@
     --repair: #4bc996;
     --repair-soft: #183a2c;
     --negative: #f08a73;
+    --replace-mark: #bb853e;
+    --repair-mark: #2a9f72;
     --accent: #c79ad8;
     --accent-soft: #33223b;
     --shadow: none;
@@ -61,6 +65,8 @@
   --repair: #4bc996;
   --repair-soft: #183a2c;
   --negative: #f08a73;
+  --replace-mark: #bb853e;
+  --repair-mark: #2a9f72;
   --accent: #c79ad8;
   --accent-soft: #33223b;
   --shadow: none;

@@ -68,3 +68,6 @@ export const DEVICE_DEFAULTS = Object.freeze({
 });
 
 export const DEFAULT_DEVICE = "laptop";
+
+// Équivalence parlante : voiture thermique moyenne (ADEME, Impact CO2), kgCO₂e par km
+export const CAR_KG_PER_KM = 0.218;
