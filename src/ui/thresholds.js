@@ -1,6 +1,6 @@
 /** Seuils de pertinence : jusqu'où la réparation reste gagnante, en euros et en carbone. */
-import { compare } from "../core/calc.js?v=202610262159";
-import { formatEur, formatKg, formatYears, formatPct } from "../core/format.js?v=202610262159";
+import { compare } from "../core/calc.js?v=202610262207";
+import { formatEur, formatKg, formatYears, formatPct } from "../core/format.js?v=202610262207";
 
 function gauge(label, used, limit, format) {
   const ratio = limit > 0 ? used / limit : 1;
@@ -27,15 +27,13 @@ export function mountThresholds(root, store) {
       root.innerHTML = `<p class="muted">Ajoutez des années gagnées par la réparation pour calculer les seuils de pertinence.</p>`;
       return;
     }
-    const afterCompta = years => formatYears(Math.max(0, years - d.compta));
     root.innerHTML = `
       ${gauge("Budget de réparation", c.repair.repairEur, c.breakEven.eur, formatEur)}
       ${gauge("Empreinte des réparations", c.repair.repairCo2, c.breakEven.co2, formatKg)}
       <ul class="facts">
         <li>Les réparations coûtent <b>${formatPct(c.repair.repairEur / d.price * 100)}</b> du prix d'un équipement neuf
           et émettent <b>${formatPct(d.fab ? c.repair.repairCo2 / d.fab * 100 : 0)}</b> de son empreinte de fabrication.</li>
-        <li>Amorti en ${formatYears(d.compta)}, l'équipement réparé sert encore <b>${afterCompta(d.lifeExt)}</b> sans dotation,
-          contre ${afterCompta(d.life)} en le remplaçant.</li>
+        <li>Amorti en ${formatYears(d.life)}, l'équipement réparé sert ensuite <b>${formatYears(gained)} bonus</b> sans dotation : chaque année bonus vous fait éviter ${formatEur(d.price / d.life)} d'amortissement et ${formatKg(d.fab / d.life)} CO₂e de fabrication.</li>
       </ul>`;
   }
   store.subscribe(render);

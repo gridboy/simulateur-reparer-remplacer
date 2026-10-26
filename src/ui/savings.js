@@ -4,9 +4,9 @@
  *  2. un pont de calcul par dimension : total si l'on remplace − achats évités
  *     + réparations = total si l'on répare, l'écart étant annoté sur la dernière barre.
  */
-import { compare, events, purchases, SCENARIO } from "../core/calc.js?v=202610262159";
-import { CAR_KG_PER_KM } from "../data/defaults.js?v=202610262159";
-import { formatKg, formatEur, formatInt, formatDec, formatPct } from "../core/format.js?v=202610262159";
+import { compare, events, purchases, SCENARIO } from "../core/calc.js?v=202610262207";
+import { CAR_KG_PER_KM } from "../data/defaults.js?v=202610262207";
+import { formatKg, formatEur, formatInt, formatDec, formatPct } from "../core/format.js?v=202610262207";
 
 const NOUNS = {
   ecran: ["écran", "écrans"],
@@ -20,15 +20,15 @@ const plural = (n, [one, many]) => `${formatInt(n)} ${n > 1 ? many : one}`;
 const BRIDGES = [
   {
     kind: "money", title: "D'où vient l'économie en euros", gainKey: "money", format: formatEur,
-    avoidedLabel: "Achats de neuf évités", repairsLabel: "Réparations payées"
+    replaceLabel: "Si vous remplacez", avoidedLabel: "Années bonus sans amortissement", repairsLabel: "Réparations payées"
   },
   {
     kind: "carbon", title: "D'où vient l'économie en carbone", gainKey: "carbon", format: formatKg,
-    avoidedLabel: "Fabrication de neuf évitée", repairsLabel: "Empreinte des réparations"
+    replaceLabel: "Si vous remplacez", avoidedLabel: "Années bonus sans fabrication amortie", repairsLabel: "Empreinte des réparations"
   }
 ];
 
-function storyHtml(device, key, global) {
+function storyHtml(device, key, global, bonus) {
   const { horizon } = global;
   const nA = purchases(device, horizon, SCENARIO.REPLACE);
   const nB = purchases(device, horizon, SCENARIO.REPAIR);
@@ -41,7 +41,7 @@ function storyHtml(device, key, global) {
   if (nB === nA) {
     return `En ${horizon} ans, vous achetez <b>${plural(nB, noun)}</b> dans les deux cas${repairs ? `, et payez en plus ${repairs}` : ""}.`;
   }
-  return `En ${horizon} ans, vous achetez <b>${plural(nB, noun)}</b> au lieu de ${formatInt(nA)}${repairs ? ` et payez ${repairs}` : ""}.`;
+  return `En ${horizon} ans, vous achetez <b>${plural(nB, noun)}</b> au lieu de ${formatInt(nA)}${repairs ? ` et payez ${repairs}` : ""} : <b>${formatDec(bonus)} an${bonus >= 2 ? "s" : ""} bonus</b> sans amortissement.`;
 }
 
 // En dessous d'une demi-unité, l'écart s'affiche à l'équilibre plutôt qu'en gain ou perte de 0
@@ -83,6 +83,7 @@ function heroesHtml(c, global) {
 }
 
 function bridgeHtml(b, c) {
+  // c porte bonusYears ; g le bilan du poste (money ou carbon)
   const g = c[b.gainKey];
   const afterAvoided = g.before - g.avoided;
   const max = Math.max(g.before, afterAvoided + g.repairs, g.after) || 1;
@@ -92,9 +93,9 @@ function bridgeHtml(b, c) {
     `<span class="bridge-bar ${cls}" style="left:${pos(Math.min(from, to))}%;width:${pos(Math.abs(to - from))}%" title="${title}"></span>`;
 
   const rows = [
-    { op: "", label: "Si vous remplacez", value: b.format(g.before),
+    { op: "", label: `${b.replaceLabel}<small>amortissement chaque année</small>`, value: b.format(g.before),
       bar: bar(0, g.before, "is-replace", `Total si vous remplacez : ${b.format(g.before)}`) },
-    { op: "−", label: b.avoidedLabel, value: `−${b.format(g.avoided)}`,
+    { op: "−", label: `${b.avoidedLabel}<small>${formatDec(c.bonusYears)} an${c.bonusYears >= 2 ? "s" : ""} × ${b.format(c.bonusYears ? g.avoided / c.bonusYears : 0)}</small>`, value: `−${b.format(g.avoided)}`,
       bar: bar(afterAvoided, g.before, "is-avoided", `${b.avoidedLabel} : ${b.format(g.avoided)}`) },
     { op: "+", label: b.repairsLabel, value: `+${b.format(g.repairs)}`,
       bar: bar(afterAvoided, afterAvoided + g.repairs, "is-repairs", `${b.repairsLabel} : ${b.format(g.repairs)}`) },
@@ -112,7 +113,7 @@ function bridgeHtml(b, c) {
       <div class="bridge-rows">
         ${rows.map(r => `
           <div class="bridge-row ${r.total ? "is-total" : ""}">
-            <span class="bridge-label"><span class="bridge-op" aria-hidden="true">${r.op}</span>${r.label}</span>
+            <span class="bridge-label"><span class="bridge-op" aria-hidden="true">${r.op}</span><span>${r.label}</span></span>
             <span class="bridge-track">${r.bar}</span>
             <span class="bridge-value">${r.value}</span>
           </div>`).join("")}
@@ -128,11 +129,11 @@ export function mountSavings(root, store) {
       <section class="savings" aria-labelledby="savings-title">
         <header class="savings-head">
           <span class="eyebrow">Sur ${state.global.horizon} ans, en réparant plutôt qu'en remplaçant</span>
-          <h3 id="savings-title" class="savings-story">${storyHtml(d, state.current, state.global)}</h3>
+          <h3 id="savings-title" class="savings-story">${storyHtml(d, state.current, state.global, c.bonusYears)}</h3>
         </header>
         ${heroesHtml(c, state.global)}
         <div class="bridges">${BRIDGES.map(b => bridgeHtml(b, c)).join("")}</div>
-        <p class="savings-note">Totaux sur ${state.global.horizon} ans, électricité comprise (identique dans les deux cas). Équivalence voiture : ${String(CAR_KG_PER_KM).replace(".", ",")} kgCO₂e/km, ADEME.</p>
+        <p class="savings-note">Totaux sur ${state.global.horizon} ans. Achat et fabrication sont amortis sur la durée d'amortissement ; au-delà, chaque année bonus n'en coûte plus. Électricité comprise, identique dans les deux cas. Équivalence voiture : ${String(CAR_KG_PER_KM).replace(".", ",")} kgCO₂e/km, ADEME.</p>
       </section>`;
   }
   store.subscribe(render);

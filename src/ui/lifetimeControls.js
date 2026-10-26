@@ -1,21 +1,21 @@
 /**
  * Contrôleurs de durée de vie :
- *  - remplacer : durée de vie habituelle de l'équipement
- *  - réparer   : années gagnées par la réparation, ajoutées à la durée habituelle (dès 0)
+ *  - remplacer : durée d'amortissement, figée (renouvellement à son terme)
+ *  - réparer   : années bonus gagnées par la réparation, au-delà de l'amortissement (dès 0)
  * L'état garde la durée prolongée (lifeExt = life + années gagnées) ; changer la durée
  * habituelle conserve le nombre d'années gagnées.
  */
-import { LIFETIME_RANGE, EXTENSION_RANGE } from "../data/defaults.js?v=202610262159";
-import { formatYears, formatDec } from "../core/format.js?v=202610262159";
+import { LIFETIME_RANGE, EXTENSION_RANGE } from "../data/defaults.js?v=202610262207";
+import { formatYears, formatDec } from "../core/format.js?v=202610262207";
 
 const CONTROLS = [
   {
     key: "life", scenario: "replace", tag: "Remplacer", range: LIFETIME_RANGE,
-    title: "Durée de vie habituelle", hint: "Renouvellement au rythme actuel"
+    title: "Durée d'amortissement", hint: "Durée de vie figée : renouvellement à son terme"
   },
   {
     key: "extension", scenario: "repair", tag: "Réparer", range: EXTENSION_RANGE,
-    title: "Années gagnées par la réparation", hint: "Ajoutées à la durée habituelle"
+    title: "Années bonus par la réparation", hint: "Gardé au-delà de l'amortissement, sans dotation"
   }
 ];
 
@@ -59,7 +59,6 @@ export function mountLifetimeControls(root, store) {
         <div class="ruler-bar" data-scenario="repair"></div>
         <span class="ruler-label" data-scenario="replace"></span>
         <span class="ruler-label" data-scenario="repair"></span>
-        <div class="ruler-compta"></div>
       </div>
       <div class="ruler-ticks">${rulerTicks()}</div>
     </div>
@@ -104,7 +103,6 @@ export function mountLifetimeControls(root, store) {
 
     root.querySelector('.ruler-bar[data-scenario="replace"]').style.width = `${pct(d.life)}%`;
     root.querySelector('.ruler-bar[data-scenario="repair"]').style.width = `${pct(d.lifeExt)}%`;
-    root.querySelector(".ruler-compta").style.left = `${pct(d.compta)}%`;
     const labelReplace = root.querySelector('.ruler-label[data-scenario="replace"]');
     labelReplace.style.left = `${pct(d.life)}%`;
     labelReplace.textContent = `remplacer : ${formatYears(d.life)}`;
@@ -113,8 +111,8 @@ export function mountLifetimeControls(root, store) {
     labelRepair.textContent = `réparer : ${formatYears(d.lifeExt)}`;
 
     root.querySelector("#life-gain").innerHTML = extension > 0
-      ? `<strong>+${formatDec(extension)} ${extension >= 2 ? "ans" : "an"}</strong> d'usage gagnés par la réparation · amortissement comptable sur ${formatYears(d.compta)} (trait)`
-      : "Aucune année gagnée : réparer revient ici à remplacer. Ajoutez des années pour mesurer l'effet de la réparation.";
+      ? `<strong>+${formatDec(extension)} ${extension >= 2 ? "ans" : "an"} bonus</strong> : l'équipement amorti en ${formatYears(d.life)} reste en service sans dotation`
+      : "Aucune année bonus : réparer revient ici à remplacer. Ajoutez des années pour mesurer l'effet de la réparation.";
   }
 
   store.subscribe(render);

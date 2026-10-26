@@ -323,6 +323,8 @@ input[type="text"] { font-family: var(--font-sans); }
 }
 .bridge-row.is-total { border-top: 1px solid var(--line); padding-top: 6px; font-weight: 600; }
 .bridge-label { display: flex; gap: 6px; color: var(--muted); }
+.bridge-label small { display: block; font-size: 0.72rem; }
+.bridge-label > span:last-child { display: grid; }
 .bridge-row.is-total .bridge-label, .bridge-row:first-child .bridge-label { color: var(--ink); }
 .bridge-op { width: 1ch; font-family: var(--font-mono); color: var(--muted); }
 .bridge-track { position: relative; height: 22px; }

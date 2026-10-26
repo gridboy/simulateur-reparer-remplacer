@@ -1,7 +1,7 @@
-/** Frise des achats, des périodes d'amortissement comptable et des réparations sur l'horizon. */
-import { activeRepairs, purchases, SCENARIO } from "../core/calc.js?v=202610262159";
-import { formatDec } from "../core/format.js?v=202610262159";
-import { escapeHtml } from "./dom.js?v=202610262159";
+/** Frise des achats, des périodes d'amortissement, des années bonus et des réparations sur l'horizon. */
+import { activeRepairs, purchases, SCENARIO } from "../core/calc.js?v=202610262207";
+import { formatDec } from "../core/format.js?v=202610262207";
+import { escapeHtml } from "./dom.js?v=202610262207";
 
 const ROWS = [
   { scenario: SCENARIO.REPLACE, label: "Remplacer", lifeKey: "life" },
@@ -14,7 +14,7 @@ function trackHtml(device, horizon, row) {
   const parts = [];
   for (let start = 0; start < horizon - 1e-9; start += life) {
     const width = Math.min(life, horizon - start);
-    const amortized = Math.min(device.compta, width);
+    const amortized = Math.min(device.life, width);
     parts.push(`<span class="tl-unit" style="left:${start / horizon * 100}%;width:${width / horizon * 100}%">
       <span class="tl-amort" style="width:${amortized / width * 100}%"></span></span>`);
     for (const r of repairs) {
@@ -46,8 +46,8 @@ export function mountTimeline(root, store) {
       }).join("")}
       <div class="tl-axis"><span></span><div>${ticks.join("")}</div></div>
       <div class="legend">
-        <span><i class="swatch tl-key-amort"></i>En amortissement comptable</span>
-        <span><i class="swatch tl-key-free"></i>Amorti, toujours en service</span>
+        <span><i class="swatch tl-key-amort"></i>En amortissement</span>
+        <span><i class="swatch tl-key-free"></i>Années bonus : amorti, toujours en service</span>
         <span><i class="swatch tl-key-repair"></i>Réparation</span>
       </div>`;
   }

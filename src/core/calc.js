@@ -2,9 +2,14 @@
  * Moteur de calcul : fonctions pures, sans accès au DOM.
  *
  * Deux scénarios pour un même équipement :
- *  - "replace" : remplacer à la durée de vie habituelle (life)
+ *  - "replace" : remplacer au terme de la durée de vie habituelle (life)
  *  - "repair"  : réparer et prolonger jusqu'à la durée prolongée (lifeExt)
- * Les valeurs annuelles sont amorties sur la durée d'usage réelle.
+ *
+ * Logique comptable : la durée habituelle est la durée d'amortissement, figée.
+ * Prix d'achat et fabrication sont amortis linéairement sur cette durée ; les années
+ * de service au-delà sont des années bonus, sans dotation. Les réparations sont
+ * comptées l'année où elles ont lieu. (La méthode Bilan Carbone amortit de même
+ * l'empreinte des immobilisations sur leur durée d'amortissement.)
  */
 
 export const SCENARIO = Object.freeze({ REPLACE: "replace", REPAIR: "repair" });
@@ -45,26 +50,45 @@ export function scenario(device, global, kind) {
   return { life, repairs, repairEur, repairCo2, co2, eur };
 }
 
-/** Gain d'un poste : brut évité, coût des réparations, net. Valeurs sur l'horizon. */
-function gain(replaceAnnual, repairAnnual, avoidedKey, horizon) {
-  const perYear = replaceAnnual.total - repairAnnual.total;
-  return {
-    before: replaceAnnual.total * horizon,   // total si l'on remplace
-    after: repairAnnual.total * horizon,     // total si l'on répare
-    avoided: (replaceAnnual[avoidedKey] - repairAnnual[avoidedKey]) * horizon,
-    repairs: repairAnnual.rep * horizon,
-    perYear,
-    net: perYear * horizon,
-    pct: replaceAnnual.total ? perYear / replaceAnnual.total * 100 : 0
-  };
+/** Années d'amortissement comprises dans l'horizon pour un scénario (le reste est bonus). */
+export function amortizedYears(device, horizon, kind) {
+  const step = lifetimeOf(device, kind);
+  let years = 0;
+  for (let start = 0; start < horizon - EPS; start += step) {
+    years += Math.min(device.life, horizon - start);
+  }
+  return years;
+}
+
+/**
+ * Bilan d'un poste sur l'horizon, en logique d'amortissement :
+ * remplacer = dotation chaque année ; réparer = dotation pendant les années
+ * d'amortissement seulement, plus les réparations.
+ */
+function ledger({ charge, use, horizon, amortized, repairs }) {
+  const before = (charge + use) * horizon;
+  const avoided = charge * (horizon - amortized);
+  const after = before - avoided + repairs;
+  const net = before - after;
+  return { before, after, avoided, repairs, net, perYear: net / horizon, pct: before ? net / before * 100 : 0 };
 }
 
 /** Comparaison réparer vs remplacer : gain carbone, gain financier, valeur du carbone évité. */
 export function compare(device, global) {
+  const { horizon } = global;
   const replace = scenario(device, global, SCENARIO.REPLACE);
   const repair = scenario(device, global, SCENARIO.REPAIR);
-  const carbon = gain(replace.co2, repair.co2, "fab", global.horizon);
-  const money = gain(replace.eur, repair.eur, "buy", global.horizon);
+  const amortized = amortizedYears(device, horizon, SCENARIO.REPAIR);
+  const repairsInHorizon = events(device, horizon, SCENARIO.REPAIR).filter(e => e.kind === "repair");
+
+  const carbon = ledger({
+    charge: device.fab / device.life, use: device.kwh * global.ef, horizon, amortized,
+    repairs: repairsInHorizon.reduce((sum, e) => sum + e.co2, 0)
+  });
+  const money = ledger({
+    charge: device.price / device.life, use: device.kwh * global.elec, horizon, amortized,
+    repairs: repairsInHorizon.reduce((sum, e) => sum + e.eur, 0)
+  });
   const carbonValue = carbon.net / 1000 * global.carbon;
   const extension = device.lifeExt / device.life - 1;
 
@@ -75,7 +99,10 @@ export function compare(device, global) {
     money,
     carbonValue,
     total: money.net + carbonValue,
-    // Total des réparations au-delà duquel réparer ne fait plus gagner
+    amortizedYears: amortized,
+    bonusYears: horizon - amortized,
+    repairCount: repairsInHorizon.length,
+    // Total des réparations d'un cycle au-delà duquel réparer ne fait plus gagner
     breakEven: { eur: device.price * extension, co2: device.fab * extension }
   };
 }

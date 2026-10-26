@@ -25,7 +25,7 @@ Face à une panne, vous comparez en général le devis de réparation au prix du
 
 **Vous payez l'essentiel du carbone à l'achat.** Pour un portable, un smartphone ou un écran, la fabrication pèse plus que l'électricité consommée pendant toute la vie de l'appareil, en particulier en France où le kWh émet 0,052 kgCO₂e. Chaque remplacement anticipé vous fait payer une nouvelle fabrication. En gardant l'appareil plus longtemps, vous répartissez cette fabrication sur plus d'années.
 
-**Vous payez un équipement par année de service.** Votre service comptable amortit un portable en 3 ans. Si vous le gardez 7 ans, chaque année d'usage vous coûte 182 € au lieu de 281 € avec un remplacement tous les 4 ans. Une batterie à 130 € vous paraît chère face à un devis ; ramenée aux 3 années qu'elle ajoute, elle vous fait économiser.
+**Au-delà de l'amortissement, chaque année est un bonus.** Votre organisation amortit un portable sur une durée figée, 4 ans par exemple. Tant qu'il est en service après ces 4 ans, il ne coûte plus de dotation : vous ne payez que l'électricité et ses éventuelles réparations. Une batterie à 130 € vous paraît chère face à un devis ; elle vous offre pourtant 3 années bonus, qui valent chacune 200 € d'amortissement évité.
 
 **Vos deux gains peuvent diverger.** Une réparation peut vous laisser à l'équilibre en euros et vous faire gagner en carbone. Une pièce lourde à produire peut produire l'effet inverse. Le simulateur affiche les deux gains côte à côte, puis les additionne en valorisant le carbone au prix que vous choisissez.
 
@@ -33,14 +33,16 @@ Pour chaque équipement, vous obtenez le budget de réparation et l'empreinte de
 
 ### Exemple : ordinateur portable pro
 
-Avec les hypothèses par défaut : portable à 1 100 € HT, 181 kgCO₂e de fabrication, remplacé tous les 4 ans, ou gardé 7 ans avec un changement de batterie à 130 €.
+Avec les hypothèses par défaut : portable à 800 € HT (tarif grand compte), 181 kgCO₂e de fabrication, amorti sur 4 ans. Vous le remplacez au terme de l'amortissement, ou vous le gardez 3 ans de plus avec un changement de batterie à 130 €.
 
-| | Remplacer (4 ans) | Réparer (7 ans) |
-|---|---|---|
-| Empreinte par an | 46,8 kgCO₂e | 28,3 kgCO₂e |
-| Coût par an | 281 € | 182 € |
+| Sur 12 ans | Remplacer tous les 4 ans | Réparer, garder 7 ans |
+|---|--:|--:|
+| Années amorties | 12 | 8 |
+| Années bonus | 0 | 4 |
+| Dépenses (amortissement, réparations, électricité) | 2 472 € | 1 932 € |
+| Empreinte (fabrication amortie, réparations, usage) | 562 kgCO₂e | 393 kgCO₂e |
 
-Sur 12 ans, vous évitez 222 kgCO₂e et 1 191 € de dépenses en réparant. Vos réparations restent rentables jusqu'à 825 € d'interventions cumulées.
+En réparant, vous économisez 540 € et évitez 169 kgCO₂e sur 12 ans. Sur un cycle de 7 ans, la réparation reste rentable jusqu'à 600 € d'interventions.
 
 ## Fonctions
 
@@ -55,12 +57,11 @@ Sur 12 ans, vous évitez 222 kgCO₂e et 1 191 € de dépenses en réparant. Vo
 
 ## Modèle de calcul
 
-- Empreinte annuelle = (fabrication + réparations) ÷ durée de vie + consommation × mix électrique
-- Coût annuel = (prix d'achat + pièces + main-d'œuvre − aide) ÷ durée de vie + consommation × prix de l'électricité
-- Gain net sur l'horizon = (bilan « remplacer » − bilan « réparer ») × horizon
-- Seuil de pertinence = prix neuf (ou empreinte de fabrication) × (durée prolongée ÷ durée habituelle − 1)
-
-Le modèle applique la même consommation électrique aux deux scénarios.
+- La durée de vie habituelle est la durée d'amortissement, figée. Prix d'achat et empreinte de fabrication sont amortis linéairement sur cette durée.
+- Remplacer : vous rachetez au terme de l'amortissement, donc vous payez une dotation chaque année de l'horizon.
+- Réparer : chaque équipement est amorti pendant la durée figée, puis sert des années bonus sans dotation. Les réparations sont comptées l'année où elles ont lieu.
+- Gain net sur l'horizon = années bonus × dotation annuelle − réparations. Même calcul pour le carbone, comme le fait la méthode Bilan Carbone pour les immobilisations.
+- Seuil de pertinence, sur un cycle = prix neuf (ou empreinte de fabrication) × années bonus ÷ durée d'amortissement.
 
 ## Sources et limites
 
@@ -68,7 +69,7 @@ Le modèle applique la même consommation électrique aux deux scénarios.
 - Mix électrique France : 0,052 kgCO₂e/kWh (ADEME).
 - Équivalence voiture : 0,218 kgCO₂e/km, voiture thermique moyenne (ADEME, Impact CO2).
 - Prix du carbone : valeur de l'action pour le climat (rapport Quinet, 2019), environ 200 €/t en 2026 et 250 €/t en 2030.
-- Les prix 2026, les consommations et l'empreinte des pièces détachées restent des ordres de grandeur. Remplacez-les par vos devis, fiches produits ou données d'inventaire.
+- Les prix 2026 sont des tarifs grand compte (achats groupés, marchés cadres). Prix, consommations et empreinte des pièces détachées restent des ordres de grandeur. Remplacez-les par vos devis, fiches produits ou données d'inventaire.
 - Les facteurs ADEME décrivent des équipements de référence antérieurs à 2026.
 - Outil voisin : [Boavizta Terminal Impact](https://dataviz.boavizta.org/terminalimpact).
 

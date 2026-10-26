@@ -1,6 +1,6 @@
 /** Tableau des quatre équipements avec leurs hypothèses, et total pour un poste complet. */
-import { compare } from "../core/calc.js?v=202610262159";
-import { formatDec, formatInt, formatEur, formatKg, formatGain, formatPct } from "../core/format.js?v=202610262159";
+import { compare } from "../core/calc.js?v=202610262207";
+import { formatDec, formatInt, formatEur, formatKg, formatGain, formatPct } from "../core/format.js?v=202610262207";
 
 const pill = pct => `<span class="pill ${pct < 0 ? "is-negative" : ""}">${formatGain(pct, formatPct)}</span>`;
 
@@ -40,9 +40,10 @@ export function mountCompareTable(root, store) {
     const total = { co2A: 0, co2B: 0, eurA: 0, eurB: 0, co2Net: 0, eurNet: 0 };
     body.innerHTML = Object.values(state.devices).map(d => {
       const c = compare(d, state.global);
+      const H = state.global.horizon;
       const r = {
-        co2A: c.replace.co2.total, co2B: c.repair.co2.total,
-        eurA: c.replace.eur.total, eurB: c.repair.eur.total,
+        co2A: c.carbon.before / H, co2B: c.carbon.after / H,
+        eurA: c.money.before / H, eurB: c.money.after / H,
         co2Net: c.carbon.net, eurNet: c.money.net
       };
       Object.keys(total).forEach(k => { total[k] += r[k]; });

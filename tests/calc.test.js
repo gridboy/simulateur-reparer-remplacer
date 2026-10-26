@@ -8,15 +8,22 @@ const laptop = () => structuredClone(DEVICE_DEFAULTS.laptop);
 const close = (actual, expected, eps = 1e-6) =>
   assert.ok(Math.abs(actual - expected) < eps, `${actual} ≠ ${expected}`);
 
-test("portable : bilans annuels remplacer et réparer", () => {
+test("portable sur 12 ans : 4 ans d'amortissement, 3 ans bonus par cycle", () => {
   const c = compare(laptop(), global);
-  close(c.replace.co2.total, 181 / 4 + 30 * 0.052);
-  close(c.repair.co2.total, (181 + 6) / 7 + 30 * 0.052);
-  close(c.replace.eur.total, 1100 / 4 + 30 * 0.2);
-  close(c.repair.eur.total, (1100 + 90 + 40) / 7 + 30 * 0.2);
+  // Réparer : achats à 0 et 7 ans, amortis 4 ans chacun dans l'horizon → 8 ans amortis, 4 ans bonus
+  assert.equal(c.amortizedYears, 8);
+  assert.equal(c.bonusYears, 4);
+  assert.equal(c.repairCount, 2); // batterie à 4 et 11 ans
+  const use = 30 * 0.2;
+  close(c.money.before, (800 / 4 + use) * 12);
+  close(c.money.avoided, 800 / 4 * 4);
+  close(c.money.repairs, 2 * (90 + 40));
+  close(c.money.after, (800 / 4) * 8 + 2 * 130 + use * 12);
+  close(c.carbon.avoided, 181 / 4 * 4);
+  close(c.carbon.repairs, 2 * 6);
 });
 
-test("gain net = gain brut − coût des réparations", () => {
+test("gain net = années bonus − réparations, et bénéfice global", () => {
   const c = compare(laptop(), global);
   close(c.carbon.net, c.carbon.avoided - c.carbon.repairs);
   close(c.money.net, c.money.avoided - c.money.repairs);
@@ -35,13 +42,14 @@ test("coût d'intervention : pièces + main-d'œuvre − aide, jamais négatif",
   assert.equal(repairCost({ parts: 10, labor: 0 }, 25), 0);
 });
 
-test("au seuil de pertinence, réparer équivaut à remplacer", () => {
+test("sur un cycle complet, réparer au seuil de pertinence équivaut à remplacer", () => {
   const d = laptop();
-  const { breakEven } = compare(d, global);
+  const oneCycle = { ...global, horizon: d.lifeExt };
+  const { breakEven } = compare(d, oneCycle);
   d.repairs = [{ label: "seuil", year: 4, parts: breakEven.eur, labor: 0, co2: breakEven.co2, on: true }];
-  const c = compare(d, global);
-  close(c.money.perYear, 0);
-  close(c.carbon.perYear, 0);
+  const c = compare(d, oneCycle);
+  close(c.money.net, 0);
+  close(c.carbon.net, 0);
 });
 
 test("sans année gagnée, réparer sans intervention équivaut à remplacer", () => {
@@ -49,6 +57,7 @@ test("sans année gagnée, réparer sans intervention équivaut à remplacer", (
   d.lifeExt = d.life;
   const c = compare(d, global);
   assert.equal(c.repair.repairs.length, 0);
+  assert.equal(c.bonusYears, 0);
   close(c.carbon.net, 0);
   close(c.money.net, 0);
 });

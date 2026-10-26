@@ -8,9 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&display=swap">
-  <link rel="stylesheet" href="styles/tokens.css?v=202610262159">
-  <link rel="stylesheet" href="styles/app.css?v=202610262159">
-  <script type="module" src="src/main.js?v=202610262159"></script>
+  <link rel="stylesheet" href="styles/tokens.css?v=202610262207">
+  <link rel="stylesheet" href="styles/app.css?v=202610262207">
+  <script type="module" src="src/main.js?v=202610262207"></script>
 </head>
 <body>
   <header class="site-header">
@@ -90,11 +90,11 @@
       <div>
         <h3>Méthode</h3>
         <ul>
-          <li>Empreinte annuelle = (fabrication + réparations) ÷ durée de vie + consommation × mix électrique.</li>
-          <li>Coût annuel = (prix d'achat + pièces + main-d'œuvre − aide) ÷ durée de vie + consommation × prix de l'électricité.</li>
-          <li>Gain net = ce que le remplacement aurait coûté − ce que coûtent les réparations, sur l'horizon choisi.</li>
-          <li>Seuil de pertinence = prix neuf (ou empreinte de fabrication) × (durée prolongée ÷ durée habituelle − 1).</li>
-          <li>La consommation est identique dans les deux scénarios.</li>
+          <li>La durée de vie habituelle est la durée d'amortissement, figée : achat et fabrication y sont amortis linéairement.</li>
+          <li>Remplacer : rachat au terme de l'amortissement, donc une dotation chaque année.</li>
+          <li>Réparer : au-delà de l'amortissement, chaque année de service est un bonus sans dotation ; les réparations sont comptées l'année où elles ont lieu.</li>
+          <li>Gain net = années bonus × dotation annuelle − réparations, en euros comme en carbone (méthode Bilan Carbone).</li>
+          <li>Seuil de pertinence sur un cycle = prix neuf (ou fabrication) × années bonus ÷ durée d'amortissement.</li>
         </ul>
       </div>
       <div>
@@ -103,7 +103,7 @@
           <li>Fabrication : ADEME Base Empreinte (données NegaOctet), via l'API Boavizta. Portable 181, fixe 277 (unité centrale), écran 64,7, smartphone 84 kgCO₂e.</li>
           <li>Mix électrique France : 0,052 kgCO₂e/kWh (ADEME).</li>
           <li>Prix du carbone : valeur de l'action pour le climat (rapport Quinet, 2019).</li>
-          <li>Prix 2026, consommations et empreinte des pièces : ordres de grandeur à ajuster.</li>
+          <li>Prix 2026 grand compte, consommations et empreinte des pièces : ordres de grandeur à ajuster.</li>
           <li><a href="https://dataviz.boavizta.org/terminalimpact" rel="noopener">Boavizta Terminal Impact</a> · <a href="https://base-empreinte.ademe.fr/" rel="noopener">ADEME Base Empreinte</a></li>
         </ul>
         <p class="license">Simulateur sous licence <a href="https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12" rel="license noopener">EUPL-1.2</a> · <a href="https://github.com/gridboy/simulateur-reparer-remplacer" rel="noopener">code source</a></p>

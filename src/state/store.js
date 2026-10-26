@@ -2,9 +2,9 @@
  * État de l'application : hypothèses globales, hypothèses par équipement, équipement affiché.
  * Persistance locale (localStorage) en confort : l'application fonctionne sans.
  */
-import { GLOBAL_DEFAULTS, DEVICE_DEFAULTS, DEFAULT_DEVICE, LIFETIME_RANGE, EXTENSION_RANGE } from "../data/defaults.js?v=202610262159";
+import { GLOBAL_DEFAULTS, DEVICE_DEFAULTS, DEFAULT_DEVICE, LIFETIME_RANGE, EXTENSION_RANGE } from "../data/defaults.js?v=202610262207";
 
-const STORAGE_KEY = "tnrc-simulateur-duree-de-vie-v2";
+const STORAGE_KEY = "tnrc-simulateur-duree-de-vie-v3";
 
 const clone = value => structuredClone(value);
 
@@ -32,6 +32,7 @@ function sanitize(saved) {
     d.life = clamp(d.life, LIFETIME_RANGE.min, LIFETIME_RANGE.max, defaults.life);
     d.lifeExt = d.life + clamp(d.lifeExt - d.life, EXTENSION_RANGE.min, EXTENSION_RANGE.max, defaults.lifeExt - defaults.life);
     if (!Array.isArray(d.repairs)) d.repairs = clone(defaults.repairs);
+    delete d.compta; // remplacé par la durée habituelle, figée
     state.devices[key] = d;
   }
   return state;

@@ -1,13 +1,12 @@
 /** Panneau d'hypothèses : équipement neuf et paramètres communs. */
-import { EMISSION_FACTORS, CARBON_PRICES } from "../data/defaults.js?v=202610262159";
-import { byId } from "./dom.js?v=202610262159";
-import { fieldsHtml, syncFields, bindFields } from "./fields.js?v=202610262159";
+import { EMISSION_FACTORS, CARBON_PRICES } from "../data/defaults.js?v=202610262207";
+import { byId } from "./dom.js?v=202610262207";
+import { fieldsHtml, syncFields, bindFields } from "./fields.js?v=202610262207";
 
 const DEVICE_FIELDS = [
   { key: "fab", label: "Fabrication", unit: "kgCO₂e, hors usage", step: 1 },
   { key: "price", label: "Prix d'achat", unit: "€ HT", step: 10 },
   { key: "kwh", label: "Consommation", unit: "kWh par an", step: 1 },
-  { key: "compta", label: "Amortissement comptable", unit: "années, linéaire", min: 1, max: 10, step: 1 },
   { key: "aid", label: "Aide à la réparation", unit: "€ par intervention", step: 5 }
 ];
 
