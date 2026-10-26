@@ -4,9 +4,9 @@
  *  2. un pont de calcul par dimension : total si l'on remplace − achats évités
  *     + réparations = total si l'on répare, l'écart étant annoté sur la dernière barre.
  */
-import { compare, events, SCENARIO } from "../core/calc.js?v=202610262210";
-import { CAR_KG_PER_KM } from "../data/defaults.js?v=202610262210";
-import { formatKg, formatEur, formatInt, formatDec, formatPct, formatYears } from "../core/format.js?v=202610262210";
+import { compare, events, SCENARIO } from "../core/calc.js?v=202610262213";
+import { CAR_KG_PER_KM } from "../data/defaults.js?v=202610262213";
+import { formatKg, formatEur, formatInt, formatDec, formatPct, formatYears } from "../core/format.js?v=202610262213";
 
 const NOUNS = {
   ecran: ["écran", "écrans"],
@@ -19,10 +19,12 @@ const NOUNS = {
 const BRIDGES = [
   {
     kind: "money", title: "D'où vient l'économie en euros", gainKey: "money", format: formatEur,
+    depreciationLabel: "d'amortissement", usageLabel: "d'électricité",
     replaceLabel: "Si vous remplacez", avoidedLabel: "Années bonus sans amortissement", repairsLabel: "Réparations payées"
   },
   {
     kind: "carbon", title: "D'où vient l'économie en carbone", gainKey: "carbon", format: formatKg,
+    depreciationLabel: "de fabrication amortie", usageLabel: "d'usage",
     replaceLabel: "Si vous remplacez", avoidedLabel: "Années bonus sans fabrication amortie", repairsLabel: "Empreinte des réparations"
   }
 ];
@@ -124,13 +126,13 @@ function bridgeHtml(b, c) {
     `<span class="bridge-bar ${cls}" style="left:${pos(Math.min(from, to))}%;width:${pos(Math.abs(to - from))}%" title="${title}"></span>`;
 
   const rows = [
-    { op: "", label: `${b.replaceLabel}<small>amortissement chaque année</small>`, value: b.format(g.before),
+    { op: "", label: `${b.replaceLabel}<small>${b.format(g.depreciation)} ${b.depreciationLabel} + ${b.format(g.usage)} ${b.usageLabel}</small>`, value: b.format(g.before),
       bar: bar(0, g.before, "is-replace", `Total si vous remplacez : ${b.format(g.before)}`) },
     { op: "−", label: `${b.avoidedLabel}<small>${formatDec(c.bonusYears)} an${c.bonusYears >= 2 ? "s" : ""} × ${b.format(c.bonusYears ? g.avoided / c.bonusYears : 0)}</small>`, value: `−${b.format(g.avoided)}`,
       bar: bar(afterAvoided, g.before, "is-avoided", `${b.avoidedLabel} : ${b.format(g.avoided)}`) },
     { op: "+", label: b.repairsLabel, value: `+${b.format(g.repairs)}`,
       bar: bar(afterAvoided, afterAvoided + g.repairs, "is-repairs", `${b.repairsLabel} : ${b.format(g.repairs)}`) },
-    { op: "=", label: "Si vous réparez", value: b.format(g.after), total: true,
+    { op: "=", label: `Si vous réparez<small>${b.format(g.depreciationKept)} ${b.depreciationLabel} + ${b.format(g.repairs)} de réparations + ${b.format(g.usage)} ${b.usageLabel}</small>`, value: b.format(g.after), total: true,
       bar: bar(0, g.after, "is-repair", `Total si vous réparez : ${b.format(g.after)}`)
         + (Math.abs(saving) > 0.5
           ? `<span class="bridge-gap ${saving < 0 ? "is-negative" : ""}" style="left:${pos(Math.min(g.after, g.before))}%;width:${pos(Math.abs(saving))}%">

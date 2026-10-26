@@ -1,7 +1,7 @@
 /** Panneau d'hypothèses : équipement neuf et paramètres communs. */
-import { EMISSION_FACTORS, CARBON_PRICES } from "../data/defaults.js?v=202610262210";
-import { byId } from "./dom.js?v=202610262210";
-import { fieldsHtml, syncFields, bindFields } from "./fields.js?v=202610262210";
+import { EMISSION_FACTORS, CARBON_PRICES } from "../data/defaults.js?v=202610262213";
+import { byId } from "./dom.js?v=202610262213";
+import { fieldsHtml, syncFields, bindFields } from "./fields.js?v=202610262213";
 
 const DEVICE_FIELDS = [
   { key: "fab", label: "Fabrication", unit: "kgCO₂e, hors usage", step: 1 },

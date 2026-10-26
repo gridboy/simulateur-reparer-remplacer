@@ -70,7 +70,12 @@ function ledger({ charge, use, horizon, amortized, repairs }) {
   const avoided = charge * (horizon - amortized);
   const after = before - avoided + repairs;
   const net = before - after;
-  return { before, after, avoided, repairs, net, perYear: net / horizon, pct: before ? net / before * 100 : 0 };
+  return {
+    before, after, avoided, repairs, net, perYear: net / horizon, pct: before ? net / before * 100 : 0,
+    depreciation: charge * horizon,          // amortissement si l'on remplace
+    depreciationKept: charge * amortized,    // amortissement restant si l'on répare
+    usage: use * horizon                     // électricité ou usage, identique dans les deux cas
+  };
 }
 
 /** Comparaison réparer vs remplacer : gain carbone, gain financier, valeur du carbone évité. */

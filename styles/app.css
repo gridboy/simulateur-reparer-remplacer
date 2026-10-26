@@ -323,7 +323,7 @@ input[type="text"] { font-family: var(--font-sans); }
 .bridge-rows { display: grid; gap: 6px; }
 .bridge-row {
   display: grid;
-  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) 6.5rem;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr) 6.5rem;
   gap: 10px;
   align-items: center;
   font-size: 0.85rem;
