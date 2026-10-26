@@ -1,0 +1,68 @@
+/*
+ * Jetons de design.
+ * Couleur sémantique des scénarios : ocre = remplacer, vert = réparer.
+ * Accent d'interface : violet NéoNum, réservé aux éléments interactifs.
+ */
+:root {
+  --bg: #f4f4f1;
+  --surface: #ffffff;
+  --surface-2: #ecede8;
+  --ink: #1a1d1b;
+  --muted: #5b625d;
+  --line: #d9dbd4;
+
+  --replace: #a0661f;
+  --replace-soft: #f3e6d2;
+  --repair: #11795a;
+  --repair-soft: #dcefe6;
+  --negative: #b4361f;
+
+  --accent: #6b2283;
+  --accent-soft: #f0e4f4;
+
+  --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --radius: 12px;
+  --radius-sm: 6px;
+  --gap: 20px;
+  --shadow: 0 1px 2px rgb(20 24 20 / 6%), 0 4px 16px rgb(20 24 20 / 4%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121412;
+    --surface: #1b1e1b;
+    --surface-2: #252925;
+    --ink: #e8ebe7;
+    --muted: #9ea69f;
+    --line: #313631;
+    --replace: #dba45c;
+    --replace-soft: #3a2e1d;
+    --repair: #4bc996;
+    --repair-soft: #183a2c;
+    --negative: #f08a73;
+    --accent: #c79ad8;
+    --accent-soft: #33223b;
+    --shadow: none;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #121412;
+  --surface: #1b1e1b;
+  --surface-2: #252925;
+  --ink: #e8ebe7;
+  --muted: #9ea69f;
+  --line: #313631;
+  --replace: #dba45c;
+  --replace-soft: #3a2e1d;
+  --repair: #4bc996;
+  --repair-soft: #183a2c;
+  --negative: #f08a73;
+  --accent: #c79ad8;
+  --accent-soft: #33223b;
+  --shadow: none;
+  color-scheme: dark;
+}

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Réparer ou remplacer · Simulateur</title>
+  <meta name="description" content="Simulez le gain carbone et le gain financier de la réparation d'un écran, d'un ordinateur fixe, d'un portable ou d'un smartphone, selon la durée de vie.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&display=swap">
+  <link rel="stylesheet" href="styles/tokens.css">
+  <link rel="stylesheet" href="styles/app.css">
+  <script type="module" src="src/main.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="header-text">
+        <p class="eyebrow">Numérique responsable · Équipements 2026</p>
+        <h1>Réparer ou remplacer ?</h1>
+        <p class="lede">Choisissez un équipement et réglez sa durée de vie. Le simulateur sépare le gain carbone et le gain financier de la réparation, coût des réparations compris, puis les réunit au prix du carbone.</p>
+      </div>
+      <ul class="partners" id="partners" aria-label="Partenaires"></ul>
+    </div>
+  </header>
+
+  <main class="container page">
+    <section aria-labelledby="step-device" class="step">
+      <h2 id="step-device" class="step-title"><span class="step-num">1</span>Équipement</h2>
+      <div class="devices" id="device-picker"></div>
+    </section>
+
+    <section aria-labelledby="step-life" class="step">
+      <h2 id="step-life" class="step-title"><span class="step-num">2</span>Durées de vie</h2>
+      <div class="card" id="lifetime"></div>
+    </section>
+
+    <section aria-labelledby="step-results" class="step">
+      <h2 id="step-results" class="step-title"><span class="step-num">3</span>Résultats : <span id="device-title"></span></h2>
+      <p class="step-sub" id="device-sub"></p>
+
+      <div class="layout">
+        <div class="results">
+          <div id="gains"></div>
+
+          <section class="card" aria-labelledby="thresholds-title">
+            <h3 id="thresholds-title">Jusqu'où la réparation reste-t-elle pertinente ?</h3>
+            <div id="thresholds" class="thresholds"></div>
+          </section>
+
+          <div class="charts" id="charts"></div>
+
+          <section class="card" aria-labelledby="timeline-title">
+            <h3 id="timeline-title">Achats, amortissement et réparations sur l'horizon</h3>
+            <div id="timeline" class="timeline"></div>
+          </section>
+        </div>
+
+        <aside class="params" aria-label="Hypothèses">
+          <details class="param-group" open>
+            <summary>Équipement neuf</summary>
+            <div id="device-params" class="fields"></div>
+          </details>
+          <details class="param-group" open>
+            <summary>Réparations prévues</summary>
+            <div id="repairs"></div>
+          </details>
+          <details class="param-group" open>
+            <summary>Paramètres communs</summary>
+            <div id="global-params" class="fields"></div>
+          </details>
+          <button type="button" class="btn-secondary" id="reset">Revenir aux valeurs par défaut</button>
+        </aside>
+      </div>
+    </section>
+
+    <section aria-labelledby="compare-title" class="step">
+      <h2 id="compare-title" class="step-title"><span class="step-num">4</span>Les quatre équipements</h2>
+      <p class="step-sub">Valeurs par année d'usage, avec les réglages de chaque équipement. Le poste complet additionne écran, fixe, portable et smartphone.</p>
+      <div id="compare"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container method">
+      <div>
+        <h3>Méthode</h3>
+        <ul>
+          <li>Empreinte annuelle = (fabrication + réparations) ÷ durée de vie + consommation × mix électrique.</li>
+          <li>Coût annuel = (prix d'achat + pièces + main-d'œuvre − aide) ÷ durée de vie + consommation × prix de l'électricité.</li>
+          <li>Gain net = ce que le remplacement aurait coûté − ce que coûtent les réparations, sur l'horizon choisi.</li>
+          <li>Seuil de pertinence = prix neuf (ou empreinte de fabrication) × (durée prolongée ÷ durée habituelle − 1).</li>
+          <li>La consommation est identique dans les deux scénarios.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Sources et limites</h3>
+        <ul>
+          <li>Fabrication : ADEME Base Empreinte (données NegaOctet), via l'API Boavizta. Portable 181, fixe 277 (unité centrale), écran 64,7, smartphone 84 kgCO₂e.</li>
+          <li>Mix électrique France : 0,052 kgCO₂e/kWh (ADEME).</li>
+          <li>Prix du carbone : valeur de l'action pour le climat (rapport Quinet, 2019).</li>
+          <li>Prix 2026, consommations et empreinte des pièces : ordres de grandeur à ajuster.</li>
+          <li><a href="https://dataviz.boavizta.org/terminalimpact" rel="noopener">Boavizta Terminal Impact</a> · <a href="https://base-empreinte.ademe.fr/" rel="noopener">ADEME Base Empreinte</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
