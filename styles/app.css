@@ -572,3 +572,4 @@ tfoot > tr > * { border-top: 2px solid var(--line); border-bottom: 0; background
 @media (max-width: 720px) {
   .option-figures { grid-template-columns: minmax(0, 1fr); }
 }
+.bridge-bar.is-resale { background: repeating-linear-gradient(90deg, var(--muted) 0 2px, transparent 2px 5px); outline: 1px dashed var(--muted); outline-offset: -1px; }

@@ -3,8 +3,8 @@
  * acheter reconditionné. Une figure par dimension, rangées triées de la moins coûteuse
  * à la plus coûteuse, la première signalée par un badge.
  */
-import { options, rankOptions } from "../core/calc.js?v=202610270828";
-import { formatEur, formatKg } from "../core/format.js?v=202610270828";
+import { options, rankOptions, cheapest } from "../core/calc.js?v=202610270837";
+import { formatEur, formatKg } from "../core/format.js?v=202610270837";
 
 const LABELS = {
   replace: "Remplacer par du neuf",
@@ -19,14 +19,15 @@ const FIGURES = [
 
 function figureHtml(fig, list) {
   const ranked = rankOptions(list, fig.key);
+  const winners = cheapest(list, fig.key);
   const max = Math.max(...ranked.map(o => o[fig.key])) || 1;
   return `
     <figure class="option-figure">
       <figcaption><h4>${fig.title}</h4></figcaption>
       <div class="option-rows">
-        ${ranked.map((o, i) => `
+        ${ranked.map(o => `
           <div class="option-row">
-            <span class="option-label">${LABELS[o.kind]}${i === 0 ? ` <span class="option-badge">${fig.badge}</span>` : ""}</span>
+            <span class="option-label">${LABELS[o.kind]}${winners.includes(o.kind) ? ` <span class="option-badge">${winners.length > 1 ? "à égalité" : fig.badge}</span>` : ""}</span>
             <span class="option-track"><span class="option-bar is-${o.kind}" style="width:${o[fig.key] / max * 100}%"></span></span>
             <span class="option-value">${fig.format(o[fig.key])}</span>
           </div>`).join("")}
@@ -40,7 +41,7 @@ export function mountOptions(root, store) {
     root.innerHTML = `
       <h3>Trois options sur ${state.global.horizon} ans</h3>
       <div class="option-figures">${FIGURES.map(fig => figureHtml(fig, list)).join("")}</div>
-      <p class="savings-note">Totaux hors électricité. Le reconditionné est amorti sur sa propre durée, sans réparation.</p>`;
+      <p class="savings-note">Totaux hors électricité. Remplacer déduit la revente des équipements remplacés ; le reconditionné est amorti sur sa propre durée, sans réparation ni revente.</p>`;
   }
   store.subscribe(render);
   render(store.get());

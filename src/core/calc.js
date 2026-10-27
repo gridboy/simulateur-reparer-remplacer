@@ -112,10 +112,21 @@ export function compare(device, global) {
     // Total des réparations d'un cycle au-delà duquel réparer ne fait plus gagner
     // Réparer renonce à une revente par cycle prolongé : elle réduit le budget de réparation
     breakEven: {
-      eur: device.price * extension - (device.lifeExt > device.life ? Math.min(Math.max(0, toNumber(device.resale)), device.price) : 0),
+      eur: device.price * extension - (device.lifeExt > device.life ? resaleValue(device, SCENARIO.REPLACE) : 0),
       co2: device.fab * extension
+    },
+    // Budget de réparation sur l'horizon : au-delà, le bilan affiché devient négatif
+    budget: {
+      eur: money.avoided - (money.resaleBefore - money.resaleAfter),
+      co2: carbon.avoided
     }
   };
+}
+
+/** Valeur de revente d'un équipement remplacé au terme de son amortissement (0 s'il est gardé au-delà). */
+function resaleValue(device, kind) {
+  if (lifetimeOf(device, kind) !== device.life) return 0;
+  return Math.min(Math.max(0, toNumber(device.resale)), device.price);
 }
 
 /** Décaissements (achats et réparations) dans le temps, sur l'horizon. */
@@ -130,6 +141,11 @@ export function events(device, horizon, kind) {
       if (t < horizon - EPS) {
         list.push({ t, co2: toNumber(r.co2), eur: repairCost(r, device.aid), kind: "repair", label: r.label });
       }
+    }
+    // Revente de l'équipement remplacé avant la fin de l'horizon (recette, sans crédit carbone)
+    const resale = resaleValue(device, kind);
+    if (resale > 0 && start + life < horizon - EPS) {
+      list.push({ t: start + life, co2: 0, eur: -resale, kind: "resale" });
     }
   }
   return list.sort((a, b) => a.t - b.t);
@@ -159,8 +175,8 @@ export function cumulative(eventList, horizon, rate, key) {
  */
 export function resaleCredit(device, horizon, kind) {
   const step = lifetimeOf(device, kind);
-  if (step !== device.life) return 0;
-  const value = Math.min(Math.max(0, toNumber(device.resale)), device.price);
+  const value = resaleValue(device, kind);
+  if (!value) return 0;
   let total = 0;
   for (let start = 0; start + step < horizon - EPS; start += step) total += value;
   return total;
@@ -179,6 +195,12 @@ export function options(device, global) {
     { kind: SCENARIO.REPAIR, eur: c.money.after, co2: c.carbon.after },
     { kind: SCENARIO.REFURB, eur: refurb.price / refurb.life * horizon, co2: refurb.fab / refurb.life * horizon }
   ];
+}
+
+/** Options au minimum pour une clé (à une demi-unité près) : plusieurs en cas d'égalité. */
+export function cheapest(list, key) {
+  const min = Math.min(...list.map(o => o[key]));
+  return list.filter(o => o[key] - min < 0.5).map(o => o.kind);
 }
 
 /** Tri croissant stable : à égalité, l'ordre d'origine est conservé. */

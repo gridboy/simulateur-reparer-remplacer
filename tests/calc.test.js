@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { compare, activeRepairs, repairCost, events, cumulative, purchases, resaleCredit, options, rankOptions, SCENARIO } from "../src/core/calc.js";
+import { compare, activeRepairs, repairCost, events, cumulative, purchases, resaleCredit, options, rankOptions, cheapest, SCENARIO } from "../src/core/calc.js";
 import { DEVICE_DEFAULTS, GLOBAL_DEFAULTS } from "../src/data/defaults.js";
 
 const global = { ...GLOBAL_DEFAULTS };
@@ -118,4 +118,23 @@ test("reconditionné plus durable que l'horizon : dotation limitée à l'horizon
 test("classement stable en cas d'égalité", () => {
   const ranked = rankOptions([{ kind: "replace", eur: 1 }, { kind: "repair", eur: 1 }, { kind: "refurb", eur: 0 }], "eur");
   assert.deepEqual(ranked.map(x => x.kind), ["refurb", "replace", "repair"]);
+});
+
+test("calendrier : reventes à 4 et 8 ans si l'on remplace, aucune si l'on répare", () => {
+  const sales = kind => events(laptop(), 12, kind).filter(e => e.kind === "resale");
+  assert.deepEqual(sales(SCENARIO.REPLACE).map(e => [e.t, e.eur]), [[4, -100], [8, -100]]);
+  assert.equal(sales(SCENARIO.REPAIR).length, 0);
+});
+
+test("budget de réparation sur l'horizon : au budget, le gain net est nul", () => {
+  const c = compare(laptop(), global);
+  close(c.budget.eur, 800 / 4 * 4 - 200);   // années bonus − revente perdue
+  close(c.budget.co2, 181 / 4 * 4);
+  close(c.money.net, c.budget.eur - c.money.repairs);
+  close(c.carbon.net, c.budget.co2 - c.carbon.repairs);
+});
+
+test("options gagnantes : toutes celles à égalité au minimum", () => {
+  assert.deepEqual(cheapest([{ kind: "replace", eur: 1 }, { kind: "repair", eur: 1 }, { kind: "refurb", eur: 0 }], "eur"), ["refurb"]);
+  assert.deepEqual(cheapest([{ kind: "replace", eur: 1 }, { kind: "repair", eur: 1.2 }, { kind: "refurb", eur: 2 }], "eur"), ["replace", "repair"]);
 });

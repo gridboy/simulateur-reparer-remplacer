@@ -2,7 +2,7 @@
  * État de l'application : hypothèses globales, hypothèses par équipement, équipement affiché.
  * Persistance locale (localStorage) en confort : l'application fonctionne sans.
  */
-import { GLOBAL_DEFAULTS, DEVICE_DEFAULTS, DEFAULT_DEVICE, LIFETIME_RANGE, EXTENSION_RANGE } from "../data/defaults.js?v=202610270828";
+import { GLOBAL_DEFAULTS, DEVICE_DEFAULTS, DEFAULT_DEVICE, LIFETIME_RANGE, EXTENSION_RANGE } from "../data/defaults.js?v=202610270837";
 
 const STORAGE_KEY = "tnrc-simulateur-duree-de-vie-v4";
 

@@ -4,10 +4,10 @@
  *  2. un pont de calcul par dimension : total si l'on remplace − achats évités
  *     + réparations = total si l'on répare, l'écart étant annoté sur la dernière barre.
  */
-import { compare, events, SCENARIO } from "../core/calc.js?v=202610270828";
-import { bridgeScale } from "./bridgeScale.js?v=202610270828";
-import { CAR_KG_PER_KM } from "../data/defaults.js?v=202610270828";
-import { formatKg, formatEur, formatInt, formatDec, formatPct, formatYears } from "../core/format.js?v=202610270828";
+import { compare, events, SCENARIO } from "../core/calc.js?v=202610270837";
+import { bridgeScale } from "./bridgeScale.js?v=202610270837";
+import { CAR_KG_PER_KM } from "../data/defaults.js?v=202610270837";
+import { formatKg, formatEur, formatInt, formatDec, formatPct, formatYears } from "../core/format.js?v=202610270837";
 
 const NOUNS = {
   ecran: ["écran", "écrans"],
@@ -138,9 +138,9 @@ function bridgeHtml(b, c) {
       bar: bar(afterAvoided, afterRepairs, "is-repairs", `${b.repairsLabel} : ${b.format(g.repairs)}`) },
     ...(resaleLost > 0.5 ? [{
       op: "+", label: "Revente perdue<small>l'équipement gardé ne se revend plus</small>", value: `+${b.format(resaleLost)}`,
-      bar: bar(afterRepairs, afterRepairs + resaleLost, "is-repairs", `Revente perdue : ${b.format(resaleLost)}`)
+      bar: bar(afterRepairs, afterRepairs + resaleLost, "is-resale", `Revente perdue : ${b.format(resaleLost)}`)
     }] : []),
-    { op: "=", label: `Si vous réparez<small>${formatYears(g.amortized)} × ${b.format(g.charge)} ${b.unitLabel} + ${b.format(g.repairs)} de réparations</small>`, value: b.format(g.after), total: true,
+    { op: "=", label: `Si vous réparez<small>${formatYears(g.amortized)} × ${b.format(g.charge)} ${b.unitLabel} + ${b.format(g.repairs)} de réparations${g.resaleAfter ? ` − ${b.format(g.resaleAfter)} de revente` : ""}</small>`, value: b.format(g.after), total: true,
       bar: bar(0, g.after, "is-repair", `Total si vous réparez : ${b.format(g.after)}`)
         + (Math.abs(saving) > 0.5
           ? `<span class="bridge-gap ${saving < 0 ? "is-negative" : ""}" style="${span(g.after, g.before)}">

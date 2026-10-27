@@ -1,7 +1,7 @@
 /** Panneau d'hypothèses : équipement neuf et paramètres communs. */
-import { EMISSION_FACTORS, CARBON_PRICES } from "../data/defaults.js?v=202610270828";
-import { byId } from "./dom.js?v=202610270828";
-import { fieldsHtml, syncFields, bindFields } from "./fields.js?v=202610270828";
+import { EMISSION_FACTORS, CARBON_PRICES } from "../data/defaults.js?v=202610270837";
+import { byId } from "./dom.js?v=202610270837";
+import { fieldsHtml, syncFields, bindFields } from "./fields.js?v=202610270837";
 
 const DEVICE_FIELDS = [
   { key: "fab", label: "Fabrication", unit: "kgCO₂e, hors usage", step: 1 },
@@ -32,7 +32,7 @@ const REFURB_FIELDS = [
 ];
 
 const RESALE_FIELDS = [
-  { key: "resale", label: "Revente de l'équipement remplacé", unit: "€ HT, au terme de l'amortissement", step: 10 }
+  { key: "resale", label: "Revente de l'équipement remplacé", unit: "€ HT, au terme de l'amortissement, plafonnée au prix neuf", step: 10 }
 ];
 
 export function mountRefurbParams(root, store) {
