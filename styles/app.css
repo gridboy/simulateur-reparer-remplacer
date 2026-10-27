@@ -537,3 +537,4 @@ tfoot > tr > * { border-top: 2px solid var(--line); border-bottom: 0; background
 }
 .method .license { margin-top: 12px; }
 .card .chart { border: 0; padding: 0; background: none; }
+.field-note { font-size: 0.75rem; color: var(--muted); margin: 0; }

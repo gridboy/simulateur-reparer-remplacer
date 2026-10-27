@@ -1,5 +1,5 @@
 /** Bandeau des logos partenaires. Un logo absent est remplacé par le nom du partenaire. */
-import { escapeHtml } from "./dom.js?v=202610270821";
+import { escapeHtml } from "./dom.js?v=202610270822";
 
 const PARTNERS = [
   { id: "lanum", name: "LaNum Pays Basque", short: "LaNum", src: "assets/logos/lanum.svg", width: 231, height: 67 },

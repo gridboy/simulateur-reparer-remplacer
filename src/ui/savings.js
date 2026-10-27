@@ -4,9 +4,9 @@
  *  2. un pont de calcul par dimension : total si l'on remplace − achats évités
  *     + réparations = total si l'on répare, l'écart étant annoté sur la dernière barre.
  */
-import { compare, events, SCENARIO } from "../core/calc.js?v=202610270821";
-import { CAR_KG_PER_KM } from "../data/defaults.js?v=202610270821";
-import { formatKg, formatEur, formatInt, formatDec, formatPct, formatYears } from "../core/format.js?v=202610270821";
+import { compare, events, SCENARIO } from "../core/calc.js?v=202610270822";
+import { CAR_KG_PER_KM } from "../data/defaults.js?v=202610270822";
+import { formatKg, formatEur, formatInt, formatDec, formatPct, formatYears } from "../core/format.js?v=202610270822";
 
 const NOUNS = {
   ecran: ["écran", "écrans"],
