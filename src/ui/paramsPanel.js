@@ -1,7 +1,7 @@
 /** Panneau d'hypothèses : équipement neuf et paramètres communs. */
-import { EMISSION_FACTORS, CARBON_PRICES } from "../data/defaults.js?v=202610262216";
-import { byId } from "./dom.js?v=202610262216";
-import { fieldsHtml, syncFields, bindFields } from "./fields.js?v=202610262216";
+import { EMISSION_FACTORS, CARBON_PRICES } from "../data/defaults.js?v=202610270837";
+import { byId } from "./dom.js?v=202610270837";
+import { fieldsHtml, syncFields, bindFields } from "./fields.js?v=202610270837";
 
 const DEVICE_FIELDS = [
   { key: "fab", label: "Fabrication", unit: "kgCO₂e, hors usage", step: 1 },
@@ -21,6 +21,32 @@ export function mountDeviceParams(root, store) {
   bindFields(root, DEVICE_FIELDS, store, state => state.devices[state.current]);
 
   const render = () => syncFields("dev", DEVICE_FIELDS, store.device());
+  store.subscribe(render);
+  render();
+}
+
+const REFURB_FIELDS = [
+  { key: "price", label: "Prix reconditionné", unit: "€ HT", step: 10 },
+  { key: "fab", label: "Fabrication reconditionné", unit: "kgCO₂e", step: 1 },
+  { key: "life", label: "Amortissement reconditionné", unit: "années", min: 1, max: 12, step: 0.5 }
+];
+
+const RESALE_FIELDS = [
+  { key: "resale", label: "Revente de l'équipement remplacé", unit: "€ HT, au terme de l'amortissement, plafonnée au prix neuf", step: 10 }
+];
+
+export function mountRefurbParams(root, store) {
+  root.innerHTML = `
+    ${fieldsHtml("refurb", REFURB_FIELDS)}
+    ${fieldsHtml("resale", RESALE_FIELDS)}
+    <p class="field-note">Revente sans crédit carbone : la fabrication reste imputée au premier utilisateur.</p>`;
+  bindFields(root, REFURB_FIELDS, store, state => state.devices[state.current].refurb);
+  bindFields(root, RESALE_FIELDS, store, state => state.devices[state.current]);
+
+  const render = () => {
+    syncFields("refurb", REFURB_FIELDS, store.device().refurb);
+    syncFields("resale", RESALE_FIELDS, store.device());
+  };
   store.subscribe(render);
   render();
 }

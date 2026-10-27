@@ -2,9 +2,9 @@
  * État de l'application : hypothèses globales, hypothèses par équipement, équipement affiché.
  * Persistance locale (localStorage) en confort : l'application fonctionne sans.
  */
-import { GLOBAL_DEFAULTS, DEVICE_DEFAULTS, DEFAULT_DEVICE, LIFETIME_RANGE, EXTENSION_RANGE } from "../data/defaults.js?v=202610262216";
+import { GLOBAL_DEFAULTS, DEVICE_DEFAULTS, DEFAULT_DEVICE, LIFETIME_RANGE, EXTENSION_RANGE } from "../data/defaults.js?v=202610270837";
 
-const STORAGE_KEY = "tnrc-simulateur-duree-de-vie-v3";
+const STORAGE_KEY = "tnrc-simulateur-duree-de-vie-v4";
 
 const clone = value => structuredClone(value);
 
@@ -25,13 +25,20 @@ const clamp = (v, min, max, fallback) => (Number.isFinite(+v) ? Math.min(max, Ma
  * durées bornées, durée prolongée jamais inférieure à la durée habituelle,
  * champs manquants repris des valeurs par défaut.
  */
-function sanitize(saved) {
+export function sanitize(saved) {
   const state = { ...initialState(), ...saved, global: { ...GLOBAL_DEFAULTS, ...saved.global } };
   for (const [key, defaults] of Object.entries(DEVICE_DEFAULTS)) {
     const d = { ...clone(defaults), ...saved.devices[key] };
     d.life = clamp(d.life, LIFETIME_RANGE.min, LIFETIME_RANGE.max, defaults.life);
     d.lifeExt = d.life + clamp(d.lifeExt - d.life, EXTENSION_RANGE.min, EXTENSION_RANGE.max, defaults.lifeExt - defaults.life);
     if (!Array.isArray(d.repairs)) d.repairs = clone(defaults.repairs);
+    const refurb = { ...defaults.refurb, ...(saved.devices[key]?.refurb ?? {}) };
+    d.refurb = {
+      price: clamp(refurb.price, 0, Infinity, defaults.refurb.price),
+      fab: clamp(refurb.fab, 0, Infinity, defaults.refurb.fab),
+      life: clamp(refurb.life, LIFETIME_RANGE.min, LIFETIME_RANGE.max, defaults.refurb.life)
+    };
+    d.resale = clamp(d.resale, 0, d.price, defaults.resale);
     delete d.compta; // remplacé par la durée habituelle, figée
     state.devices[key] = d;
   }

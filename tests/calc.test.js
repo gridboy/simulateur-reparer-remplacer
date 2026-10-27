@@ -1,10 +1,15 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { compare, activeRepairs, repairCost, events, cumulative, purchases, SCENARIO } from "../src/core/calc.js";
+import { compare, activeRepairs, repairCost, events, cumulative, purchases, resaleCredit, options, rankOptions, cheapest, SCENARIO } from "../src/core/calc.js";
 import { DEVICE_DEFAULTS, GLOBAL_DEFAULTS } from "../src/data/defaults.js";
 
 const global = { ...GLOBAL_DEFAULTS };
-const laptop = () => structuredClone(DEVICE_DEFAULTS.laptop);
+// Portable de référence des tests : valeurs figées ici, indépendantes des valeurs par défaut de l'interface
+const laptop = () => ({
+  ...structuredClone(DEVICE_DEFAULTS.laptop),
+  fab: 181, price: 800, kwh: 30, life: 4, lifeExt: 7, aid: 0,
+  resale: 100, refurb: { price: 450, fab: 27, life: 3 }
+});
 const close = (actual, expected, eps = 1e-6) =>
   assert.ok(Math.abs(actual - expected) < eps, `${actual} ≠ ${expected}`);
 
@@ -14,7 +19,7 @@ test("portable sur 12 ans : 4 ans d'amortissement, 3 ans bonus par cycle", () =>
   assert.equal(c.amortizedYears, 8);
   assert.equal(c.bonusYears, 4);
   assert.equal(c.repairCount, 2); // batterie à 4 et 11 ans
-  close(c.money.before, 800 / 4 * 12);
+  close(c.money.before, 800 / 4 * 12 - 200);
   close(c.money.avoided, 800 / 4 * 4);
   close(c.money.repairs, 2 * (90 + 40));
   close(c.money.after, (800 / 4) * 8 + 2 * 130);
@@ -26,7 +31,7 @@ test("portable sur 12 ans : 4 ans d'amortissement, 3 ans bonus par cycle", () =>
 test("gain net = années bonus − réparations, et bénéfice global", () => {
   const c = compare(laptop(), global);
   close(c.carbon.net, c.carbon.avoided - c.carbon.repairs);
-  close(c.money.net, c.money.avoided - c.money.repairs);
+  close(c.money.net, c.money.avoided - c.money.repairs - 200);
   close(c.total, c.money.net + c.carbon.net / 1000 * global.carbon);
 });
 
@@ -44,6 +49,7 @@ test("coût d'intervention : pièces + main-d'œuvre − aide, jamais négatif",
 
 test("sur un cycle complet, réparer au seuil de pertinence équivaut à remplacer", () => {
   const d = laptop();
+  // revente à 100 € : le seuil doit la compter (réparer renonce à une revente par cycle)
   const oneCycle = { ...global, horizon: d.lifeExt };
   const { breakEven } = compare(d, oneCycle);
   d.repairs = [{ label: "seuil", year: 4, parts: breakEven.eur, labor: 0, co2: breakEven.co2, on: true }];
@@ -74,4 +80,61 @@ test("cumul final = somme des décaissements + usage", () => {
   const list = events(d, 12, SCENARIO.REPAIR);
   const points = cumulative(list, 12, 6, "eur");
   close(points.at(-1)[1], list.reduce((s, e) => s + e.eur, 0) + 12 * 6);
+});
+
+test("revente : 2 portables revendus 100 € à 4 et 8 ans si l'on remplace", () => {
+  const c = compare(laptop(), global);
+  close(c.money.resaleBefore, 200);
+  close(c.money.resaleAfter, 0);           // réparé, gardé 7 ans : âge > 4, valeur 0
+  close(c.money.before, 2400 - 200);
+  close(c.money.after, 1600 + 260);
+  close(c.money.net, 340);
+});
+
+test("0 année bonus : réparer = remplacer, revente comprise", () => {
+  const d = laptop(); d.lifeExt = d.life;
+  const c = compare(d, global);
+  close(c.money.before, c.money.after);
+  close(c.money.net, 0);
+});
+
+test("revente bornée au prix neuf", () => {
+  const d = laptop(); d.resale = 5000;
+  assert.equal(resaleCredit(d, 12, SCENARIO.REPLACE), 2 * 800);
+});
+
+test("trois options sur 12 ans", () => {
+  const o = options(laptop(), global);
+  assert.deepEqual(o.map(x => x.kind), ["replace", "repair", "refurb"]);
+  close(o[0].eur, 2200); close(o[1].eur, 1860); close(o[2].eur, 450 / 3 * 12);
+  close(o[0].co2, 181 / 4 * 12); close(o[2].co2, 27 / 3 * 12);
+});
+
+test("reconditionné plus durable que l'horizon : dotation limitée à l'horizon", () => {
+  const d = laptop(); d.refurb.life = 15;
+  close(options(d, global)[2].eur, 450 / 15 * 12);
+});
+
+test("classement stable en cas d'égalité", () => {
+  const ranked = rankOptions([{ kind: "replace", eur: 1 }, { kind: "repair", eur: 1 }, { kind: "refurb", eur: 0 }], "eur");
+  assert.deepEqual(ranked.map(x => x.kind), ["refurb", "replace", "repair"]);
+});
+
+test("calendrier : reventes à 4 et 8 ans si l'on remplace, aucune si l'on répare", () => {
+  const sales = kind => events(laptop(), 12, kind).filter(e => e.kind === "resale");
+  assert.deepEqual(sales(SCENARIO.REPLACE).map(e => [e.t, e.eur]), [[4, -100], [8, -100]]);
+  assert.equal(sales(SCENARIO.REPAIR).length, 0);
+});
+
+test("budget de réparation sur l'horizon : au budget, le gain net est nul", () => {
+  const c = compare(laptop(), global);
+  close(c.budget.eur, 800 / 4 * 4 - 200);   // années bonus − revente perdue
+  close(c.budget.co2, 181 / 4 * 4);
+  close(c.money.net, c.budget.eur - c.money.repairs);
+  close(c.carbon.net, c.budget.co2 - c.carbon.repairs);
+});
+
+test("options gagnantes : toutes celles à égalité au minimum", () => {
+  assert.deepEqual(cheapest([{ kind: "replace", eur: 1 }, { kind: "repair", eur: 1 }, { kind: "refurb", eur: 0 }], "eur"), ["refurb"]);
+  assert.deepEqual(cheapest([{ kind: "replace", eur: 1 }, { kind: "repair", eur: 1.2 }, { kind: "refurb", eur: 2 }], "eur"), ["replace", "repair"]);
 });

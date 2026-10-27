@@ -25,7 +25,7 @@ Face à une panne, vous comparez en général le devis de réparation au prix du
 
 **Vous payez l'essentiel du carbone à l'achat.** Pour un portable, un smartphone ou un écran, la fabrication pèse plus que l'électricité consommée pendant toute la vie de l'appareil, en particulier en France où le kWh émet 0,052 kgCO₂e. Chaque remplacement anticipé vous fait payer une nouvelle fabrication. En gardant l'appareil plus longtemps, vous répartissez cette fabrication sur plus d'années.
 
-**Au-delà de l'amortissement, chaque année est un bonus.** Votre organisation amortit un portable sur une durée figée, 4 ans par exemple. Tant qu'il est en service après ces 4 ans, il ne coûte plus de dotation : vous ne payez que l'électricité et ses éventuelles réparations. Une batterie à 130 € vous paraît chère face à un devis ; elle vous offre pourtant 3 années bonus, qui valent chacune 200 € d'amortissement évité.
+**Au-delà de l'amortissement, chaque année est un bonus.** Votre organisation amortit un portable sur une durée figée, 4 ans par exemple. Tant qu'il est en service après ces 4 ans, il ne coûte plus de dotation : vous ne payez que l'électricité et ses éventuelles réparations. Une batterie à 130 € vous paraît chère face à un devis ; elle vous offre pourtant 3 années bonus, qui valent chacune 150 € d'amortissement évité.
 
 **Vos deux gains peuvent diverger.** Une réparation peut vous laisser à l'équilibre en euros et vous faire gagner en carbone. Une pièce lourde à produire peut produire l'effet inverse. Le simulateur affiche les deux gains côte à côte, puis les additionne en valorisant le carbone au prix que vous choisissez.
 
@@ -33,18 +33,18 @@ Pour chaque équipement, vous obtenez le budget de réparation et l'empreinte de
 
 ### Exemple : ordinateur portable pro
 
-Avec les hypothèses par défaut : portable à 800 € HT (tarif grand compte), 181 kgCO₂e de fabrication, amorti sur 4 ans. Vous le remplacez au terme de l'amortissement, ou vous le gardez 3 ans de plus avec un changement de batterie à 130 €.
+Avec les hypothèses par défaut : portable d'entrée de gamme professionnelle à 600 € HT (tarif grand compte), 181 kgCO₂e de fabrication, amorti sur 4 ans, revendu 70 € quand il est remplacé. Vous le remplacez au terme de l'amortissement, ou vous le gardez 3 ans de plus avec un changement de batterie à 130 €.
 
 | Sur 12 ans | Remplacer tous les 4 ans | Réparer, garder 7 ans |
 |---|--:|--:|
 | Années amorties | 12 | 8 |
 | Années bonus | 0 | 4 |
-| Dépenses (amortissement et réparations) | 2 400 € | 1 860 € |
+| Dépenses (amortissement, réparations, revente déduite) | 1 660 € | 1 460 € |
 | Empreinte (fabrication amortie et réparations) | 543 kgCO₂e | 374 kgCO₂e |
 
 L'électricité (72 € et 19 kgCO₂e sur 12 ans) est la même dans les deux cas : le simulateur ne la compte pas dans la comparaison.
 
-En réparant, vous économisez 540 € et évitez 169 kgCO₂e sur 12 ans. Sur un cycle de 7 ans, la réparation reste rentable jusqu'à 600 € d'interventions.
+En réparant, vous économisez 200 € et évitez 169 kgCO₂e sur 12 ans. Acheter reconditionné (330 €, amorti 3 ans) coûte 1 320 € et 108 kgCO₂e sur la même période. Plus l'équipement neuf est bon marché, plus le gain financier de la réparation se réduit ; le gain carbone, lui, ne dépend pas du prix. Pour un écran à 100 €, une réparation à 80 € coûte même plus cher que le remplacement.
 
 ## Fonctions
 
@@ -53,6 +53,8 @@ En réparant, vous économisez 540 € et évitez 169 kgCO₂e sur 12 ans. Sur u
 - **Ce que vous économisez** : le simulateur répond en une phrase (combien d'équipements vous achetez dans chaque cas), puis en trois chiffres sur l'horizon choisi : euros économisés, kgCO₂e évités avec leur équivalent en kilomètres de voiture, et bénéfice global au prix du carbone choisi.
 - **D'où vient l'économie** : un pont de calcul par dimension part du total « si vous remplacez », retire les achats ou la fabrication évités, ajoute les réparations et arrive au total « si vous réparez ». L'écart apparaît en pointillés.
 - **Calendrier des dépenses** : les courbes cumulées montrent quand vous payez, avec une marche à chaque achat ou réparation.
+- **Trois options** : remplacer par du neuf, réparer et garder, ou acheter reconditionné. Le simulateur les classe en euros et en carbone, et signale la moins chère et la plus sobre.
+- **Revente** : la valeur de revente de l'équipement remplacé réduit le coût du renouvellement. Le pont des euros montre la revente perdue quand vous gardez l'équipement.
 - **Seuils de pertinence** : budget et empreinte de réparation au-delà desquels remplacer devient préférable.
 - **Amortissement comptable** : la frise distingue les années d'amortissement des années où l'équipement amorti reste en service.
 - **Comparaison** des quatre équipements et d'un poste de travail complet.
@@ -64,6 +66,8 @@ En réparant, vous économisez 540 € et évitez 169 kgCO₂e sur 12 ans. Sur u
 - Réparer : chaque équipement est amorti pendant la durée figée, puis sert des années bonus sans dotation. Les réparations sont comptées l'année où elles ont lieu.
 - Gain net sur l'horizon = années bonus × dotation annuelle − réparations. Même calcul pour le carbone, comme le fait la méthode Bilan Carbone pour les immobilisations.
 - Seuil de pertinence, sur un cycle = prix neuf (ou empreinte de fabrication) × années bonus ÷ durée d'amortissement.
+- Reconditionné : rachat au terme de sa propre durée d'amortissement, sans réparation ni revente. Son empreinte couvre le reconditionnement et la part de fabrication restant à allouer, soit environ 15 % du neuf par défaut.
+- Revente : un équipement remplacé au terme de son amortissement, avant la fin de l'horizon, rapporte sa valeur de revente, bornée au prix neuf. Gardé au-delà, il ne vaut plus rien. La revente ne donne pas de crédit carbone : la fabrication reste imputée au premier utilisateur.
 
 ## Sources et limites
 
@@ -71,9 +75,10 @@ En réparant, vous économisez 540 € et évitez 169 kgCO₂e sur 12 ans. Sur u
 - Mix électrique France : 0,052 kgCO₂e/kWh (ADEME).
 - Équivalence voiture : 0,218 kgCO₂e/km, voiture thermique moyenne (ADEME, Impact CO2).
 - Prix du carbone : valeur de l'action pour le climat (rapport Quinet, 2019), environ 200 €/t en 2026 et 250 €/t en 2030.
-- Les prix 2026 sont des tarifs grand compte (achats groupés, marchés cadres). Prix, consommations et empreinte des pièces détachées restent des ordres de grandeur. Remplacez-les par vos devis, fiches produits ou données d'inventaire.
+- Les prix 2026 sont des tarifs grand compte (achats groupés, marchés cadres) pour de l'entrée de gamme professionnelle. Prix, consommations et empreinte des pièces détachées restent des ordres de grandeur. Remplacez-les par vos devis, fiches produits ou données d'inventaire.
 - Les facteurs ADEME décrivent des équipements de référence antérieurs à 2026.
 - Outil voisin : [Boavizta Terminal Impact](https://dataviz.boavizta.org/terminalimpact).
+- Reconditionné : ADEME et Arcep, étude 2022 sur l'impact environnemental des produits reconditionnés (réduction de l'ordre de 77 à 91 % pour un smartphone). Les valeurs par défaut (prix, empreinte, durée, revente) restent des ordres de grandeur à confirmer.
 
 ## Lancer en local
 

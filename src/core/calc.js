@@ -12,7 +12,7 @@
  * l'empreinte des immobilisations sur leur durée d'amortissement.)
  */
 
-export const SCENARIO = Object.freeze({ REPLACE: "replace", REPAIR: "repair" });
+export const SCENARIO = Object.freeze({ REPLACE: "replace", REPAIR: "repair", REFURB: "refurb" });
 
 const EPS = 1e-9;
 const toNumber = v => +v || 0;
@@ -65,16 +65,16 @@ export function amortizedYears(device, horizon, kind) {
  * remplacer = dotation chaque année ; réparer = dotation pendant les années
  * d'amortissement seulement, plus les réparations.
  */
-function ledger({ charge, use, horizon, amortized, repairs }) {
+function ledger({ charge, use, horizon, amortized, repairs, resaleBefore = 0, resaleAfter = 0 }) {
   // L'usage (électricité) est identique dans les deux scénarios : il est reporté à part
   // et n'entre pas dans les totaux comparés.
-  const before = charge * horizon;
+  const before = charge * horizon - resaleBefore;
   const avoided = charge * (horizon - amortized);
-  const after = before - avoided + repairs;
+  const after = charge * amortized + repairs - resaleAfter;
   const net = before - after;
   return {
     before, after, avoided, repairs, net, perYear: net / horizon, pct: before ? net / before * 100 : 0,
-    charge, amortized, usage: use * horizon
+    charge, amortized, usage: use * horizon, resaleBefore, resaleAfter
   };
 }
 
@@ -92,7 +92,9 @@ export function compare(device, global) {
   });
   const money = ledger({
     charge: device.price / device.life, use: device.kwh * global.elec, horizon, amortized,
-    repairs: repairsInHorizon.reduce((sum, e) => sum + e.eur, 0)
+    repairs: repairsInHorizon.reduce((sum, e) => sum + e.eur, 0),
+    resaleBefore: resaleCredit(device, horizon, SCENARIO.REPLACE),
+    resaleAfter: resaleCredit(device, horizon, SCENARIO.REPAIR)
   });
   const carbonValue = carbon.net / 1000 * global.carbon;
   const extension = device.lifeExt / device.life - 1;
@@ -108,8 +110,23 @@ export function compare(device, global) {
     bonusYears: horizon - amortized,
     repairCount: repairsInHorizon.length,
     // Total des réparations d'un cycle au-delà duquel réparer ne fait plus gagner
-    breakEven: { eur: device.price * extension, co2: device.fab * extension }
+    // Réparer renonce à une revente par cycle prolongé : elle réduit le budget de réparation
+    breakEven: {
+      eur: device.price * extension - (device.lifeExt > device.life ? resaleValue(device, SCENARIO.REPLACE) : 0),
+      co2: device.fab * extension
+    },
+    // Budget de réparation sur l'horizon : au-delà, le bilan affiché devient négatif
+    budget: {
+      eur: money.avoided - (money.resaleBefore - money.resaleAfter),
+      co2: carbon.avoided
+    }
   };
+}
+
+/** Valeur de revente d'un équipement remplacé au terme de son amortissement (0 s'il est gardé au-delà). */
+function resaleValue(device, kind) {
+  if (lifetimeOf(device, kind) !== device.life) return 0;
+  return Math.min(Math.max(0, toNumber(device.resale)), device.price);
 }
 
 /** Décaissements (achats et réparations) dans le temps, sur l'horizon. */
@@ -124,6 +141,11 @@ export function events(device, horizon, kind) {
       if (t < horizon - EPS) {
         list.push({ t, co2: toNumber(r.co2), eur: repairCost(r, device.aid), kind: "repair", label: r.label });
       }
+    }
+    // Revente de l'équipement remplacé avant la fin de l'horizon (recette, sans crédit carbone)
+    const resale = resaleValue(device, kind);
+    if (resale > 0 && start + life < horizon - EPS) {
+      list.push({ t: start + life, co2: 0, eur: -resale, kind: "resale" });
     }
   }
   return list.sort((a, b) => a.t - b.t);
@@ -144,6 +166,46 @@ export function cumulative(eventList, horizon, rate, key) {
   total += (horizon - last) * rate;
   points.push([horizon, total]);
   return points;
+}
+
+/**
+ * Reventes dans l'horizon : un équipement remplacé avant la fin de l'horizon rapporte
+ * sa valeur de revente (bornée au prix neuf) s'il est remplacé au terme de son
+ * amortissement ; gardé au-delà (réparé), il ne vaut plus rien.
+ */
+export function resaleCredit(device, horizon, kind) {
+  const step = lifetimeOf(device, kind);
+  const value = resaleValue(device, kind);
+  if (!value) return 0;
+  let total = 0;
+  for (let start = 0; start + step < horizon - EPS; start += step) total += value;
+  return total;
+}
+
+/**
+ * Trois options sur l'horizon, hors usage : remplacer par du neuf, réparer,
+ * acheter reconditionné (amorti sur sa propre durée, sans réparation ni revente).
+ */
+export function options(device, global) {
+  const c = compare(device, global);
+  const { horizon } = global;
+  const refurb = device.refurb;
+  return [
+    { kind: SCENARIO.REPLACE, eur: c.money.before, co2: c.carbon.before },
+    { kind: SCENARIO.REPAIR, eur: c.money.after, co2: c.carbon.after },
+    { kind: SCENARIO.REFURB, eur: refurb.price / refurb.life * horizon, co2: refurb.fab / refurb.life * horizon }
+  ];
+}
+
+/** Options au minimum pour une clé (à une demi-unité près) : plusieurs en cas d'égalité. */
+export function cheapest(list, key) {
+  const min = Math.min(...list.map(o => o[key]));
+  return list.filter(o => o[key] - min < 0.5).map(o => o.kind);
+}
+
+/** Tri croissant stable : à égalité, l'ordre d'origine est conservé. */
+export function rankOptions(list, key) {
+  return [...list].sort((a, b) => a[key] - b[key]);
 }
 
 /** Nombre d'équipements achetés sur l'horizon. */
