@@ -2,8 +2,8 @@
  * Calendrier des dépenses et des émissions réelles, cumulées année par année (SVG).
  * Chaque marche est un achat ou une réparation ; l'économie amortie est donnée par la vue savings.
  */
-import { events, cumulative, SCENARIO } from "../core/calc.js?v=202610262216";
-import { formatKg, formatEur, formatInt } from "../core/format.js?v=202610262216";
+import { events, cumulative, SCENARIO } from "../core/calc.js?v=202610270820";
+import { formatKg, formatEur, formatInt } from "../core/format.js?v=202610270820";
 
 const SIZE = { width: 440, height: 230, left: 50, right: 14, top: 12, bottom: 28 };
 const NICE_STEPS = [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];

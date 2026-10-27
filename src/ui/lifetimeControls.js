@@ -5,8 +5,8 @@
  * L'état garde la durée prolongée (lifeExt = life + années gagnées) ; changer la durée
  * habituelle conserve le nombre d'années gagnées.
  */
-import { LIFETIME_RANGE, EXTENSION_RANGE } from "../data/defaults.js?v=202610262216";
-import { formatYears, formatDec } from "../core/format.js?v=202610262216";
+import { LIFETIME_RANGE, EXTENSION_RANGE } from "../data/defaults.js?v=202610270820";
+import { formatYears, formatDec } from "../core/format.js?v=202610270820";
 
 const CONTROLS = [
   {
