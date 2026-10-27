@@ -53,6 +53,8 @@ En réparant, vous économisez 540 € et évitez 169 kgCO₂e sur 12 ans. Sur u
 - **Ce que vous économisez** : le simulateur répond en une phrase (combien d'équipements vous achetez dans chaque cas), puis en trois chiffres sur l'horizon choisi : euros économisés, kgCO₂e évités avec leur équivalent en kilomètres de voiture, et bénéfice global au prix du carbone choisi.
 - **D'où vient l'économie** : un pont de calcul par dimension part du total « si vous remplacez », retire les achats ou la fabrication évités, ajoute les réparations et arrive au total « si vous réparez ». L'écart apparaît en pointillés.
 - **Calendrier des dépenses** : les courbes cumulées montrent quand vous payez, avec une marche à chaque achat ou réparation.
+- **Trois options** : remplacer par du neuf, réparer et garder, ou acheter reconditionné. Le simulateur les classe en euros et en carbone, et signale la moins chère et la plus sobre.
+- **Revente** : la valeur de revente de l'équipement remplacé réduit le coût du renouvellement. Le pont des euros montre la revente perdue quand vous gardez l'équipement.
 - **Seuils de pertinence** : budget et empreinte de réparation au-delà desquels remplacer devient préférable.
 - **Amortissement comptable** : la frise distingue les années d'amortissement des années où l'équipement amorti reste en service.
 - **Comparaison** des quatre équipements et d'un poste de travail complet.
@@ -64,6 +66,8 @@ En réparant, vous économisez 540 € et évitez 169 kgCO₂e sur 12 ans. Sur u
 - Réparer : chaque équipement est amorti pendant la durée figée, puis sert des années bonus sans dotation. Les réparations sont comptées l'année où elles ont lieu.
 - Gain net sur l'horizon = années bonus × dotation annuelle − réparations. Même calcul pour le carbone, comme le fait la méthode Bilan Carbone pour les immobilisations.
 - Seuil de pertinence, sur un cycle = prix neuf (ou empreinte de fabrication) × années bonus ÷ durée d'amortissement.
+- Reconditionné : rachat au terme de sa propre durée d'amortissement, sans réparation ni revente. Son empreinte couvre le reconditionnement et la part de fabrication restant à allouer, soit environ 15 % du neuf par défaut.
+- Revente : un équipement remplacé au terme de son amortissement, avant la fin de l'horizon, rapporte sa valeur de revente, bornée au prix neuf. Gardé au-delà, il ne vaut plus rien. La revente ne donne pas de crédit carbone : la fabrication reste imputée au premier utilisateur.
 
 ## Sources et limites
 
@@ -74,6 +78,7 @@ En réparant, vous économisez 540 € et évitez 169 kgCO₂e sur 12 ans. Sur u
 - Les prix 2026 sont des tarifs grand compte (achats groupés, marchés cadres). Prix, consommations et empreinte des pièces détachées restent des ordres de grandeur. Remplacez-les par vos devis, fiches produits ou données d'inventaire.
 - Les facteurs ADEME décrivent des équipements de référence antérieurs à 2026.
 - Outil voisin : [Boavizta Terminal Impact](https://dataviz.boavizta.org/terminalimpact).
+- Reconditionné : ADEME et Arcep, étude 2022 sur l'impact environnemental des produits reconditionnés (réduction de l'ordre de 77 à 91 % pour un smartphone). Les valeurs par défaut (prix, empreinte, durée, revente) restent des ordres de grandeur à confirmer.
 
 ## Lancer en local
 

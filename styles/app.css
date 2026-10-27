@@ -538,3 +538,37 @@ tfoot > tr > * { border-top: 2px solid var(--line); border-bottom: 0; background
 .method .license { margin-top: 12px; }
 .card .chart { border: 0; padding: 0; background: none; }
 .field-note { font-size: 0.75rem; color: var(--muted); margin: 0; }
+
+/* ==========================================================================
+   Trois options
+   ========================================================================== */
+.option-figures { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.option-figure { display: grid; gap: 8px; min-width: 0; margin: 0; }
+.option-figure h4 { margin: 0; font-size: 0.9rem; }
+.option-rows { display: grid; gap: 8px; }
+.option-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "label value" "track track";
+  gap: 4px 10px;
+  font-size: 0.85rem;
+}
+.option-label { grid-area: label; }
+.option-value { grid-area: value; font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.option-track { grid-area: track; height: 14px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+.option-bar { display: block; height: 100%; border-radius: 3px; }
+.option-bar.is-replace { background: var(--replace-mark); }
+.option-bar.is-repair { background: var(--repair-mark); }
+.option-bar.is-refurb { background: var(--muted); }
+.option-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 7px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font: 500 0.7rem var(--font-mono);
+  color: var(--ink);
+}
+@media (max-width: 720px) {
+  .option-figures { grid-template-columns: minmax(0, 1fr); }
+}
