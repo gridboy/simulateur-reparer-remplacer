@@ -4,7 +4,12 @@ import { compare, activeRepairs, repairCost, events, cumulative, purchases, resa
 import { DEVICE_DEFAULTS, GLOBAL_DEFAULTS } from "../src/data/defaults.js";
 
 const global = { ...GLOBAL_DEFAULTS };
-const laptop = () => structuredClone(DEVICE_DEFAULTS.laptop);
+// Portable de référence des tests : valeurs figées ici, indépendantes des valeurs par défaut de l'interface
+const laptop = () => ({
+  ...structuredClone(DEVICE_DEFAULTS.laptop),
+  fab: 181, price: 800, kwh: 30, life: 4, lifeExt: 7, aid: 0,
+  resale: 100, refurb: { price: 450, fab: 27, life: 3 }
+});
 const close = (actual, expected, eps = 1e-6) =>
   assert.ok(Math.abs(actual - expected) < eps, `${actual} ≠ ${expected}`);
 

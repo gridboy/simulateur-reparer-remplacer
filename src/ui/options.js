@@ -3,8 +3,8 @@
  * acheter reconditionné. Une figure par dimension, rangées triées de la moins coûteuse
  * à la plus coûteuse, la première signalée par un badge.
  */
-import { options, rankOptions } from "../core/calc.js?v=202610270823";
-import { formatEur, formatKg } from "../core/format.js?v=202610270823";
+import { options, rankOptions } from "../core/calc.js?v=202610270827";
+import { formatEur, formatKg } from "../core/format.js?v=202610270827";
 
 const LABELS = {
   replace: "Remplacer par du neuf",

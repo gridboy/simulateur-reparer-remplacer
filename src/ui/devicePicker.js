@@ -1,5 +1,5 @@
 /** Sélecteur du type d'équipement. */
-import { formatYears } from "../core/format.js?v=202610270823";
+import { formatYears } from "../core/format.js?v=202610270827";
 
 const ICONS = {
   ecran: '<rect x="3" y="3" width="34" height="20" rx="1.5"/><path d="M15 29h10M20 23v6"/>',

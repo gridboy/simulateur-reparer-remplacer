@@ -1,17 +1,17 @@
 /** Point d'entrée : crée le store et monte chaque vue sur son conteneur. */
-import { createStore } from "./state/store.js?v=202610270823";
-import { byId } from "./ui/dom.js?v=202610270823";
-import { mountPartners } from "./ui/partners.js?v=202610270823";
-import { mountDevicePicker } from "./ui/devicePicker.js?v=202610270823";
-import { mountLifetimeControls } from "./ui/lifetimeControls.js?v=202610270823";
-import { mountDeviceParams, mountGlobalParams, mountRefurbParams } from "./ui/paramsPanel.js?v=202610270823";
-import { mountRepairsEditor } from "./ui/repairsEditor.js?v=202610270823";
-import { mountSavings } from "./ui/savings.js?v=202610270823";
-import { mountOptions } from "./ui/options.js?v=202610270823";
-import { mountThresholds } from "./ui/thresholds.js?v=202610270823";
-import { mountCharts } from "./ui/charts.js?v=202610270823";
-import { mountTimeline } from "./ui/timeline.js?v=202610270823";
-import { mountCompareTable } from "./ui/compareTable.js?v=202610270823";
+import { createStore } from "./state/store.js?v=202610270827";
+import { byId } from "./ui/dom.js?v=202610270827";
+import { mountPartners } from "./ui/partners.js?v=202610270827";
+import { mountDevicePicker } from "./ui/devicePicker.js?v=202610270827";
+import { mountLifetimeControls } from "./ui/lifetimeControls.js?v=202610270827";
+import { mountDeviceParams, mountGlobalParams, mountRefurbParams } from "./ui/paramsPanel.js?v=202610270827";
+import { mountRepairsEditor } from "./ui/repairsEditor.js?v=202610270827";
+import { mountSavings } from "./ui/savings.js?v=202610270827";
+import { mountOptions } from "./ui/options.js?v=202610270827";
+import { mountThresholds } from "./ui/thresholds.js?v=202610270827";
+import { mountCharts } from "./ui/charts.js?v=202610270827";
+import { mountTimeline } from "./ui/timeline.js?v=202610270827";
+import { mountCompareTable } from "./ui/compareTable.js?v=202610270827";
 
 const store = createStore();
 
