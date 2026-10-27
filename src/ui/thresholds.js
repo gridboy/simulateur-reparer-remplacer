@@ -1,6 +1,6 @@
 /** Seuils de pertinence : jusqu'où la réparation reste gagnante, en euros et en carbone. */
-import { compare } from "../core/calc.js?v=202610270820";
-import { formatEur, formatKg, formatYears, formatPct } from "../core/format.js?v=202610270820";
+import { compare } from "../core/calc.js?v=202610270821";
+import { formatEur, formatKg, formatYears, formatPct } from "../core/format.js?v=202610270821";
 
 function gauge(label, used, limit, format) {
   const ratio = limit > 0 ? used / limit : 1;
