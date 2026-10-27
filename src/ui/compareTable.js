@@ -1,6 +1,6 @@
 /** Tableau des quatre équipements avec leurs hypothèses, et total pour un poste complet. */
-import { compare } from "../core/calc.js?v=202610270827";
-import { formatDec, formatInt, formatEur, formatKg, formatGain, formatPct } from "../core/format.js?v=202610270827";
+import { compare } from "../core/calc.js?v=202610270828";
+import { formatDec, formatInt, formatEur, formatKg, formatGain, formatPct } from "../core/format.js?v=202610270828";
 
 const pill = pct => `<span class="pill ${pct < 0 ? "is-negative" : ""}">${formatGain(pct, formatPct)}</span>`;
 

@@ -110,7 +110,11 @@ export function compare(device, global) {
     bonusYears: horizon - amortized,
     repairCount: repairsInHorizon.length,
     // Total des réparations d'un cycle au-delà duquel réparer ne fait plus gagner
-    breakEven: { eur: device.price * extension, co2: device.fab * extension }
+    // Réparer renonce à une revente par cycle prolongé : elle réduit le budget de réparation
+    breakEven: {
+      eur: device.price * extension - (device.lifeExt > device.life ? Math.min(Math.max(0, toNumber(device.resale)), device.price) : 0),
+      co2: device.fab * extension
+    }
   };
 }
 

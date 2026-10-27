@@ -49,7 +49,7 @@ test("coût d'intervention : pièces + main-d'œuvre − aide, jamais négatif",
 
 test("sur un cycle complet, réparer au seuil de pertinence équivaut à remplacer", () => {
   const d = laptop();
-  d.resale = 0; // seuil défini sans revente (formule de la spec)
+  // revente à 100 € : le seuil doit la compter (réparer renonce à une revente par cycle)
   const oneCycle = { ...global, horizon: d.lifeExt };
   const { breakEven } = compare(d, oneCycle);
   d.repairs = [{ label: "seuil", year: 4, parts: breakEven.eur, labor: 0, co2: breakEven.co2, on: true }];

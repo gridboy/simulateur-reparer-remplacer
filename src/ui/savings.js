@@ -4,9 +4,10 @@
  *  2. un pont de calcul par dimension : total si l'on remplace − achats évités
  *     + réparations = total si l'on répare, l'écart étant annoté sur la dernière barre.
  */
-import { compare, events, SCENARIO } from "../core/calc.js?v=202610270827";
-import { CAR_KG_PER_KM } from "../data/defaults.js?v=202610270827";
-import { formatKg, formatEur, formatInt, formatDec, formatPct, formatYears } from "../core/format.js?v=202610270827";
+import { compare, events, SCENARIO } from "../core/calc.js?v=202610270828";
+import { bridgeScale } from "./bridgeScale.js?v=202610270828";
+import { CAR_KG_PER_KM } from "../data/defaults.js?v=202610270828";
+import { formatKg, formatEur, formatInt, formatDec, formatPct, formatYears } from "../core/format.js?v=202610270828";
 
 const NOUNS = {
   ecran: ["écran", "écrans"],
@@ -122,11 +123,11 @@ function bridgeHtml(b, c) {
   // Revente à laquelle on renonce en gardant l'équipement (poste euros seulement)
   const resaleLost = (g.resaleBefore || 0) - (g.resaleAfter || 0);
   const afterRepairs = afterAvoided + g.repairs;
-  const max = Math.max(g.before, afterRepairs, afterRepairs + resaleLost, g.after) || 1;
-  const pos = v => (v / max) * 100;
+  const pos = bridgeScale([g.before, afterAvoided, afterRepairs, afterRepairs + resaleLost, g.after]);
+  const span = (from, to) => `left:${pos(Math.min(from, to))}%;width:${pos(Math.max(from, to)) - pos(Math.min(from, to))}%`;
   const saving = g.before - g.after;
   const bar = (from, to, cls, title) =>
-    `<span class="bridge-bar ${cls}" style="left:${pos(Math.min(from, to))}%;width:${pos(Math.abs(to - from))}%" title="${title}"></span>`;
+    `<span class="bridge-bar ${cls}" style="${span(from, to)}" title="${title}"></span>`;
 
   const rows = [
     { op: "", label: `${b.replaceLabel}<small>${formatYears(g.horizonYears)} × ${b.format(g.charge)} ${b.unitLabel}${g.resaleBefore ? ` − ${b.format(g.resaleBefore)} de revente` : ""}</small>`, value: b.format(g.before),
@@ -142,7 +143,7 @@ function bridgeHtml(b, c) {
     { op: "=", label: `Si vous réparez<small>${formatYears(g.amortized)} × ${b.format(g.charge)} ${b.unitLabel} + ${b.format(g.repairs)} de réparations</small>`, value: b.format(g.after), total: true,
       bar: bar(0, g.after, "is-repair", `Total si vous réparez : ${b.format(g.after)}`)
         + (Math.abs(saving) > 0.5
-          ? `<span class="bridge-gap ${saving < 0 ? "is-negative" : ""}" style="left:${pos(Math.min(g.after, g.before))}%;width:${pos(Math.abs(saving))}%">
+          ? `<span class="bridge-gap ${saving < 0 ? "is-negative" : ""}" style="${span(g.after, g.before)}">
               <span>${saving >= 0 ? "économie" : "surcoût"} ${b.format(Math.abs(saving))}</span></span>`
           : "") }
   ];
